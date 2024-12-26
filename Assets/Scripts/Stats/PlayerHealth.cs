@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerHealth : Health
 {
-    public RectTransform healthBar;
     public Attack activeAttack;
     public float wager;
     // Start is called before the first frame update
@@ -12,14 +11,14 @@ public class PlayerHealth : Health
     {
         get
         {
-            //healthBar.localScale = new Vector3(.1f * base.Val, 1f, 1f);
+            //HealthBar.localScale = new Vector3(.1f * base.Val, 1f, 1f);
             return base.Val;
         }
         set
         {
             base.Val = value;
             if (base.Val > Max) base.Val = Max;
-            healthBar.localScale = new Vector3(.01f * base.Val * 4, 1f, 1f);
+            HealthBar.localScale = new Vector3(.01f * base.Val * 4, 1f, 1f);
             if (base.Val <= 0)
                 kill();
         }

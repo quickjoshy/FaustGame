@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Attack : MonoBehaviour
 {
-    float DefaultCost;
+    protected float DefaultCost;
     [SerializeField]
     float cost;
 
@@ -32,12 +32,14 @@ public class Attack : MonoBehaviour
     [SerializeField]
     protected Camera cam;
 
+    [SerializeField]
+    protected Button[] Buttons = new Button[3];
+
     public virtual void Start() {
         owner = GetComponent<Health>();
         player = FindAnyObjectByType<Player>();
         animator = GetComponent<Animator>();
         CastingPoint = owner.CastingPoint;
-        cam = GameObject.Find("PlayerCamera").GetComponent<Camera>();
         DefaultCost = cost;
     }
 
@@ -45,11 +47,12 @@ public class Attack : MonoBehaviour
         GameObject.Find("ActiveAbilityText").GetComponent<Text>().text = string.Format("{0}", AbilityName);
     }
 
-    public void OnEnable()
+    public virtual void OnEnable()
     {
         if (animator)
         {
             animator.SetBool(AbilityName, true);
+            cost = DefaultCost;
             Debug.Log(AbilityName);
         }
     }
@@ -72,4 +75,34 @@ public class Attack : MonoBehaviour
         }
     }
 
+    public virtual void Upgrade()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected void DisableButtons()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            Buttons[i].gameObject.SetActive(false);
+        }
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    protected void PrepButtons(string label1, string label2, string label3) {
+        for (int i = 0; i < 3; i++)
+        {
+            Buttons[i].onClick.RemoveAllListeners();
+        }
+
+        Text text = Buttons[0].gameObject.transform.GetChild(0).GetComponent<Text>();
+        text.text = label1;
+
+        text = Buttons[1].gameObject.transform.GetChild(0).GetComponent<Text>();
+        text.text = label2;
+
+        text = Buttons[2].gameObject.transform.GetChild(0).GetComponent<Text>();
+        text.text = label3;
+    }
 }

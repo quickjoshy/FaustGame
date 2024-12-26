@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class BulletAbility : Attack
 {
@@ -12,10 +14,16 @@ public class BulletAbility : Attack
     float timer = 0f;
 
     [SerializeField]
-    float timerMax;
+    public float timerMax = .2f;
+
+    [SerializeField]
+    public int BulletForce = 40;
+
+    [SerializeField]
+    public float BulletDamage = 10f;
 
 
-    public void Awake()
+    public override void Start()
     {
         base.Start();
         AbilityName = "Malice";
@@ -76,16 +84,45 @@ public class BulletAbility : Attack
 
     public void CreateBullet()
     {
+        KiteBehavior kite = GetComponent<KiteBehavior>();
         GameObject newBullet = Instantiate(bullet);
         BulletObject bulletObj = newBullet.AddComponent<BulletObject>();
         bulletObj.Power = Wager;
         bulletObj.owner = owner;
+        bulletObj.baseDmg = BulletDamage;
         newBullet.transform.position = CastingPoint.position + CastingPoint.forward;
-        newBullet.GetComponent<Rigidbody>().AddForce(CastingPoint.forward * 40, ForceMode.Impulse);
+       
+        newBullet.GetComponent<Rigidbody>().AddForce(CastingPoint.forward * BulletForce, ForceMode.Impulse);
         owner.Val -= Cost * Wager;
     }
 
     public void stopShooting() {
         animator.SetBool("IsShooting", false);
     }
+
+    public override void Upgrade() {
+        PrepButtons("Damage", "Force", "Fire Rate");
+
+
+        Buttons[0].onClick.AddListener(DamageUp);
+        Buttons[1].onClick.AddListener(ForceUp);
+        Buttons[2].onClick.AddListener(RateUp);
+    }
+
+    void DamageUp() {
+        BulletDamage += 5f;
+        DisableButtons();
+    }
+
+    void ForceUp() {
+        BulletForce += 20;
+        DisableButtons();
+    }
+
+    void RateUp() {
+        animator.SetFloat("ShootingSpeed", animator.GetFloat("ShootingSpeed") + .30f);
+        DisableButtons();
+    }
+
+    
 }

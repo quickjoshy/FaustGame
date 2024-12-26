@@ -5,7 +5,7 @@ using UnityEngine;
 public class BulletObject : MonoBehaviour
 {
     public float Power { get; set; }
-    float baseDmg = 10f;
+    public float baseDmg = 10f;
     public Health owner;
 
     private void Start()
@@ -16,12 +16,16 @@ public class BulletObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(other.gameObject.layer == 6) //Enivronment layer
+            Destroy(gameObject);
+
         Health hp = other.gameObject.GetComponent<Health>();
         if (hp)
         {
             if (hp.tag == gameObject.tag) return;
             hp.Val -= (Power * (baseDmg + Power));
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
+        
     }
 }

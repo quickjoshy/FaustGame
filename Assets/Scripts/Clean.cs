@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Clean : MonoBehaviour
@@ -14,7 +15,7 @@ public class Clean : MonoBehaviour
     IEnumerator clean() {
         float timer = 0f;
 
-        while (timer < cooldown) {
+        while (timer < cooldown - rate) {
             transform.localScale -= StartingScale * (rate/cooldown);
             timer += rate;
             yield return new WaitForSeconds(rate);

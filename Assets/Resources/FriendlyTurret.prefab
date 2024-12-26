@@ -63,6 +63,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -127,6 +130,7 @@ MonoBehaviour:
   cost: 1
   recovering: 0
   CastingPoint: {fileID: 4944439689529092671}
+  HealthBar: {fileID: 0}
 --- !u!114 &4944439689529092670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,7 +149,14 @@ MonoBehaviour:
   AbilityName: 
   Wager: 0
   animator: {fileID: 0}
+  cam: {fileID: 0}
+  Buttons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   timerMax: 0.4
+  BulletForce: 70
+  BulletDamage: 10
 --- !u!54 &2540556852778277251
 Rigidbody:
   m_ObjectHideFlags: 0

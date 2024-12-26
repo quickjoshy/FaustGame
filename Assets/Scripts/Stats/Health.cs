@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Health : Stat
 {
+    public Transform CastingPoint;
+    public RectTransform HealthBar;
+    private void Start()
+    {
+        if (CastingPoint == null) CastingPoint = transform;
+    }
+
     public override float Val
     {
         get { 
@@ -12,15 +19,14 @@ public class Health : Stat
         set { base.Val = value;
             if (base.Val <= 0)
                 kill();
+            if (HealthBar) {
+                HealthBar.localScale = new Vector3(Val/Max, 1, 1);
+            }
         }
     }
 
-    public Transform CastingPoint;
-    // Start is called before the first frame update
-    void Start()
-    {
+    
 
-    }
 
     protected void kill() {
         Player player = FindAnyObjectByType<Player>();

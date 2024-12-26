@@ -21,6 +21,11 @@ public class SmiteAbility : Attack
     [SerializeField]
     float DamageNumber = 50f;
 
+    [SerializeField]
+    int Range = 60;
+
+    LayerMask RayMask;
+
     //SMITE POSITION NEEDS TO BE .5 * distance
     //SMITE SCALE NEEDS TO BE distance - 1
     //SMITE FORWARD NEEDS TO BE THE END POINT
@@ -30,6 +35,7 @@ public class SmiteAbility : Attack
         base.Start();
         Cost = 5f;
         AbilityName = "Damnation";
+        RayMask = LayerMask.GetMask("Environment");
         foreach (Transform t in transform)
         {
             if (t.tag == "CastingPoint")
@@ -51,15 +57,17 @@ public class SmiteAbility : Attack
         Vector3 CastPoint = cam.transform.position;
         Vector3 EndPoint;
         smite = Instantiate(Resources.Load("Smite") as GameObject);
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, 30))
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, Range, RayMask))
         {
             EndPoint = hit.point;
         }
         else
         {
-            EndPoint = cam.transform.position + cam.transform.forward * 30;
+            EndPoint = cam.transform.position + cam.transform.forward * Range;
         }
 
+        if(hit.transform)
+        Debug.Log(hit.transform.name);
         
         float distance = Vector3.Distance(CastPoint, EndPoint);
         Vector3 halfway = (EndPoint + CastPoint)/2;
@@ -68,7 +76,7 @@ public class SmiteAbility : Attack
         smite.transform.right = cam.transform.forward;
         smite.transform.position = halfway + (smite.transform.right);
         owner.Val -= (Cost * Wager);
-        Knockback(CastPoint);
+        Knockback(EndPoint);
         Damage(EndPoint);
     }
 
@@ -109,10 +117,35 @@ public class SmiteAbility : Attack
             if (hp && !CompareTag(c.tag))
             {
                 hp.Val -= DamageNumber * 1.2f * Wager;
-                Debug.Log($"{c.name} is at HP: {hp.Val}");
             }
         }
 
+    }
+
+    public override void Upgrade()
+    {
+        PrepButtons("Damage", "Knockback", "Cost");
+
+
+        Buttons[0].onClick.AddListener(DamageUp);
+        Buttons[1].onClick.AddListener(ForceUp);
+        Buttons[2].onClick.AddListener(CostDown);
+    }
+
+    void DamageUp() {
+        DamageNumber += 20f;
+        DisableButtons();
+    }
+
+    void ForceUp() {
+        KnockbackPower += 5;
+        DisableButtons();
+    }
+
+    void CostDown() {
+        DefaultCost *= .6f;
+        Cost = DefaultCost;
+        DisableButtons();
     }
 
 }

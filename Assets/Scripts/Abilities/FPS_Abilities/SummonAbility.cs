@@ -6,16 +6,28 @@ using UnityEngine;
 public class SummonAbility : Attack
 {
     // Start is called before the first frame update
-    public Transform[] turrets;
+    public List<Transform> turrets;
+
+    [SerializeField]
+    int NumTurrets = 5;
 
     [SerializeField]
     public int NumShots;
 
+    [SerializeField]
+    float HealthMult = 1;
+
+    [SerializeField]
+    float DmgMult = 1;
+
     public void Awake()
     {
         base.Start();
-        turrets = new Transform[6];
+        turrets = new List<Transform>(NumTurrets);
+        for (int i = 0; i < NumTurrets; i++)
+            turrets.Add(null);
         AbilityName = "Communion";
+        Cost = DefaultCost;
         foreach (Transform t in transform)
         {
             if (t.tag == "CastingPoint")
@@ -24,8 +36,6 @@ public class SummonAbility : Attack
         }
         UpdateUI();
     }
-
-    // Update is called once per frame
 
     public void BeginSpawn()
     {
@@ -63,10 +73,14 @@ public class SummonAbility : Attack
         {
             turret.transform.position = SpawnPosition + new Vector3(0, .5f, 0);
             turret.GetComponent<BulletAbility>().Wager = Wager;
-            turret.GetComponent<Health>().Max = Wager * NumShots;
-            turret.GetComponent<Health>().Val = Wager * NumShots;
-            owner.Val -= Wager * Cost * 4;
-            Debug.Log(turret);
+            turret.GetComponent<BulletAbility>().Cost = HealthMult;
+            turret.GetComponent<BulletAbility>().BulletDamage *= DmgMult;
+            turret.GetComponent<Health>().Max = Wager * NumShots * HealthMult;
+            turret.GetComponent<Health>().Val = Wager * NumShots * HealthMult;
+            if (player.bursting)
+                gameObject.GetComponent<Burst>().Val -= 15;
+            else
+                owner.Val -= Wager * Cost;
             yield return new WaitForSeconds(1);
         }
 
@@ -78,7 +92,7 @@ public class SummonAbility : Attack
     }
 
     bool addTurretToArray(Transform NewTurret) {
-        for (int i = 0; i < turrets.Length; i++) {
+        for (int i = 0; i < NumTurrets; i++) {
             if (turrets[i] == null)
             {
                 turrets[i] = NewTurret;
@@ -91,5 +105,30 @@ public class SummonAbility : Attack
     private void Update()
     {
         if (Input.GetButtonDown("Attack")) animator.SetTrigger("Summon");
+    }
+
+    public override void Upgrade()
+    {
+        PrepButtons("Stock", "Health", "Cost");
+        Buttons[0].onClick.AddListener(StockUp);
+        Buttons[1].onClick.AddListener(HealthUp);
+        Buttons[2].onClick.AddListener(CostDown);
+    }
+
+    void StockUp() {
+        NumTurrets++;
+        turrets.Add(null);
+        DisableButtons();
+    }
+
+    void HealthUp() {
+        HealthMult += 1;
+        DisableButtons();
+    }
+
+    void CostDown() {
+        DefaultCost *= .6f;
+        Cost = DefaultCost;
+        DisableButtons();
     }
 }

@@ -2,40 +2,42 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.VisualScripting;
-using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
 public class ShieldAbility : Attack
 {
-    Transform CastPoint;
+    [SerializeField]
     GameObject shield;
+
+    [SerializeField]
+    GameObject WavePrefab;
+
     GameObject wave;
     bool active = false;
     private Health hp;
     private bool onCooldown;
     float Cooldown = 0f;
 
+    [SerializeField]
+    float ShieldSize = 1;
+
+    [SerializeField]
+    float WaveSize = 1;
+
     // Start is called before the first frame update
-    public void Awake()
+    public override void Start()
     {
         base.Start();
-        Cost = 1f;
         AbilityName = "Retribution";
-        foreach (Transform t in transform)
-        {
-            if (t.tag == "CastingPoint")
-                CastPoint = t;
-            break;
-        }
-        shield = Instantiate( Resources.Load("Shield") as GameObject);
-        shield.transform.parent = CastPoint;
+        
+        shield.transform.parent = CastingPoint;
         shield.transform.localPosition = new Vector3(0f, 0f, 2.5f);
         shield.transform.localScale = new Vector3(.01f, .01f, 1);
-        shield.transform.forward = CastPoint.forward;
+        shield.transform.forward = CastingPoint.forward;
         shield.SetActive(false);
         player = FindAnyObjectByType<Player>();
-        UpdateUI();
-        
+        if(GetComponent<Player>())
+            UpdateUI();
     }
 
     // Update is called once per frame
@@ -43,6 +45,7 @@ public class ShieldAbility : Attack
         //wager affects shield size and expansion speed
         active = !active;
 
+        if (!shield) return;
         shield.SetActive(active);
 
         if (!active)
@@ -73,23 +76,18 @@ public class ShieldAbility : Attack
         {
             if (player && owner.gameObject != player.gameObject) owner.Val -= Cost * Time.deltaTime;
             else owner.Val -= Cost * Time.deltaTime * Wager;
-            if (shield.transform.localScale.x < power - .1f)
+
+            if (!shield) return;
+
+            if (shield.transform.localScale.x < (power * ShieldSize) - .1f)
             {
-                shield.transform.localScale += ((power * Time.deltaTime) * new Vector3(1f, .5f, 0f));
+                shield.transform.localScale += ((power * Time.deltaTime) * new Vector3(1f, .5f, 1f));
             }
 
-            else if (shield.transform.localScale.x > power + .1f)
+            else if (shield.transform.localScale.x > (power * ShieldSize) + .1f)
             {
-                shield.transform.localScale -= ((power * Time.deltaTime) * new Vector3(1f, .5f, 0f));
+                shield.transform.localScale -= ((power * Time.deltaTime) * new Vector3(1f, .5f, 1f));
             }
-
-            /* THE FOLLOWING IS CODE FOR THE BEAM ABILITY: SEND DAMAGE EVERY TICK
-            tickTimer += Time.deltaTime;
-            if (tickTimer >= tickTimerMax) { 
-                tickTimer -= tickTimerMax; 
-            
-            }
-            */
         }
     }
 
@@ -114,14 +112,40 @@ public class ShieldAbility : Attack
         float dmgTaken = .5f * Wager * (hp.Max - hp.Val);
         if (onCooldown || dmgTaken == 0) return;
         onCooldown = true;
-        wave = Instantiate(Resources.Load("Wave") as GameObject);
+        wave = Instantiate(WavePrefab);
         wave.GetComponent<WaveObject>().power = dmgTaken;
         wave.GetComponent<WaveObject>().owner = owner;
         wave.transform.forward = shield.transform.forward;
-        wave.transform.localScale = new Vector3(1, 5, 1);
+        wave.transform.localScale = new Vector3(1, 1, 1) * WaveSize;
         wave.transform.position = shield.transform.position;
         wave.GetComponent<Rigidbody>().AddForce(wave.transform.forward * 10, ForceMode.Impulse);
-        wave.tag = CastPoint.parent.tag;
+        wave.tag = CastingPoint.tag;
         hp.Val = hp.Max;
+    }
+
+    public override void Upgrade()
+    {
+        PrepButtons("Shield Size", "Wave Size", "Cost");
+        Buttons[0].onClick.AddListener(ShieldUp);
+        Buttons[1].onClick.AddListener(WaveUp);
+        Buttons[2].onClick.AddListener(CostDown);
+    }
+
+    void ShieldUp() {
+
+        ShieldSize += 1f;
+        DisableButtons();
+    
+    }
+
+    void WaveUp() {
+        WaveSize += .5f;
+        DisableButtons();
+    }
+
+    void CostDown() {
+        DefaultCost *= .6f;
+        Cost = DefaultCost;
+        DisableButtons();
     }
 }

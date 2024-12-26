@@ -6,8 +6,8 @@ using static UnityEngine.GraphicsBuffer;
 
 public class KiteBehavior : Behavior
 {
+    [SerializeField]
     NavMeshAgent agent;
-    Player player;
 
     [SerializeField]
     float KiteRadius = 12f;
@@ -21,9 +21,9 @@ public class KiteBehavior : Behavior
     {
         base.Start();
         Target = FindEnemies();
-        agent = gameObject.AddComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
+        if(!agent) agent = gameObject.AddComponent<NavMeshAgent>();
         agent.updateRotation = false;
-        player = FindAnyObjectByType<Player>();
     }
 
     // Update is called once per frame
@@ -34,7 +34,6 @@ public class KiteBehavior : Behavior
 
 
         timer += Time.deltaTime;
-
         if (timer >= timerMax)
         {
             timer = 0f;
@@ -52,12 +51,7 @@ public class KiteBehavior : Behavior
 
     private void Kite(Transform target)
     {
-        Vector3 targetPos = Vector3.zero;
-        if (player)
-        {
-            targetPos = target.position;
-            transform.LookAt(targetPos);
-        } //
+        Vector3 targetPos = target.position;
         float distance = Vector3.Distance(transform.position, targetPos);
         //Debug.LogFormat("Distance:{0}/{1}", distance, KiteRadius);
         if (distance < KiteRadius)

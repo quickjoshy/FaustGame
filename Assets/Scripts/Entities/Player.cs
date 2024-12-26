@@ -51,8 +51,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     Stat[] stats = new Stat[4];
 
-    [SerializeField]
-    Attack[] attacks = new Attack[4];
+    public Attack[] attacks = new Attack[4];
     private bool falling = true;
 
     Vector3 KnockbackForce;
@@ -210,9 +209,9 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKeyUp("p")) { 
             health.Max = 10000; health.Val = 10000;
-            GameObject.Find("FPS_UI").SetActive(false);
-            this.enabled = false;
-            UnityEngine.Cursor.lockState = CursorLockMode.Confined;
+            //GameObject.Find("FPS_UI").SetActive(false);
+            //this.enabled = false;
+            //UnityEngine.Cursor.lockState = CursorLockMode.Confined;
             return;
         }
 
@@ -246,6 +245,11 @@ public class Player : MonoBehaviour
     public void Knockback(float power) {
         kb = power;
         
+    }
+
+    private void OnDestroy()
+    {
+        Application.Quit();
     }
 
 }
