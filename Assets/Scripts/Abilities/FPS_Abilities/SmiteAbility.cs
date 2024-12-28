@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -8,40 +9,43 @@ public class SmiteAbility : Attack
 {
     // Start is called before the first frame update
 
-    bool charging;
-
     GameObject smite;
 
-    [SerializeField]
-    float KnockbackRadius = 3f;
 
     [SerializeField]
-    float KnockbackPower;
+    float DamageNumber = 5f;
 
     [SerializeField]
-    float DamageNumber = 50f;
+    float ChargingFactor = .5f;
 
     [SerializeField]
     int Range = 60;
 
+    float Charge = 0;
+
+    [SerializeField]
+    bool Charging = false;
+
+    [SerializeField]
+    GameObject ExplosionPrefab;
+
     LayerMask RayMask;
+    Burst PlayerBurst;
 
     //SMITE POSITION NEEDS TO BE .5 * distance
     //SMITE SCALE NEEDS TO BE distance - 1
     //SMITE FORWARD NEEDS TO BE THE END POINT
 
+
+    //REMEMBER TO REIMPLEMENT KNOCKBACK UPGRADES
+
+
     public void Awake()
     {
         base.Start();
-        Cost = 5f;
         AbilityName = "Damnation";
         RayMask = LayerMask.GetMask("Environment");
-        foreach (Transform t in transform)
-        {
-            if (t.tag == "CastingPoint")
-                CastingPoint = t;
-            break;
-        }
+        PlayerBurst = GetComponent<Burst>();
         UpdateUI();
 
     }
@@ -49,7 +53,26 @@ public class SmiteAbility : Attack
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonUp("Attack")) animator.SetTrigger("Smite");
+        if (AttackAction.IsPressed())
+        {
+            animator.SetBool("SmiteCharge", true);
+            Charging = true;
+        }
+
+        else if (AttackAction.WasReleasedThisFrame())
+        {
+            animator.SetTrigger("Smite");
+            animator.SetBool("SmiteCharge", false);
+            Charging = false;
+        }
+
+        if (Charging) {
+            Charge += Time.deltaTime * Wager * DamageNumber * (1 + .03f * Wager) * ChargingFactor;
+            Debug.Log(Charge);
+            if (PlayerBurst && player.bursting)
+                PlayerBurst.Val -= 30 * Cost * Time.deltaTime;
+            owner.Val -= (Cost * Wager * Time.deltaTime);
+        }
     }
 
     void Fire() {
@@ -66,8 +89,6 @@ public class SmiteAbility : Attack
             EndPoint = cam.transform.position + cam.transform.forward * Range;
         }
 
-        if(hit.transform)
-        Debug.Log(hit.transform.name);
         
         float distance = Vector3.Distance(CastPoint, EndPoint);
         Vector3 halfway = (EndPoint + CastPoint)/2;
@@ -75,11 +96,23 @@ public class SmiteAbility : Attack
         smite.transform.localScale = new Vector3(distance-2, .3f * Wager, .3f * Wager);
         smite.transform.right = cam.transform.forward;
         smite.transform.position = halfway + (smite.transform.right);
-        owner.Val -= (Cost * Wager);
+        SpawnExplosion(EndPoint);
+        /*
         Knockback(EndPoint);
         Damage(EndPoint);
+        */
+        Charge = 0f;
     }
 
+    private void SpawnExplosion(Vector3 Point)
+    {
+        GameObject explosion = Instantiate(ExplosionPrefab, Point, Quaternion.identity);
+        explosion.GetComponent<SmiteExplosion>().SetCharge(Charge);
+        explosion.GetComponent<SmiteExplosion>().SetCharge(Charge);
+        explosion.tag = tag;
+    }
+
+    /*
     void Knockback(Vector3 Point) {
         Collider[] colliders = Physics.OverlapSphere(Point, KnockbackRadius);
         foreach (Collider c in colliders)
@@ -99,7 +132,7 @@ public class SmiteAbility : Attack
 
             if (player) {
                 //StartCoroutine(force, 1f);
-                player.Knockback(KnockbackPower * Wager);
+                player.Knockback(KnockbackPower * Charge);
             }
             
         }
@@ -116,11 +149,13 @@ public class SmiteAbility : Attack
             Health hp = c.GetComponent<Health>();
             if (hp && !CompareTag(c.tag))
             {
-                hp.Val -= DamageNumber * 1.2f * Wager;
+                hp.Val -= Charge;
             }
         }
 
     }
+
+    */
 
     public override void Upgrade()
     {
@@ -138,7 +173,7 @@ public class SmiteAbility : Attack
     }
 
     void ForceUp() {
-        KnockbackPower += 5;
+        //KnockbackPower += 5;
         DisableButtons();
     }
 

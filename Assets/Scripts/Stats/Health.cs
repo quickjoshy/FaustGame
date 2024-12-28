@@ -18,7 +18,7 @@ public class Health : Stat
         }
         set { base.Val = value;
             if (base.Val <= 0)
-                kill();
+                Kill();
             if (HealthBar) {
                 HealthBar.localScale = new Vector3(Val/Max, 1, 1);
             }
@@ -28,7 +28,7 @@ public class Health : Stat
     
 
 
-    protected void kill() {
+    protected virtual void Kill() {
         Player player = FindAnyObjectByType<Player>();
         RTS_Player Rts_Player = FindAnyObjectByType<RTS_Player>();
         if (player && gameObject.tag == "Enemy") player.OnEnemyKill((int)Max);

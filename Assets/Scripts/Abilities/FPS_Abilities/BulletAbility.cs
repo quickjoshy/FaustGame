@@ -29,7 +29,6 @@ public class BulletAbility : Attack
         AbilityName = "Malice";
         bullet = Resources.Load("Bullet") as GameObject;
         owner = GetComponent<Health>();
-        Cost = 1f;
         if (name == "Player") UpdateUI();
     }
 
@@ -51,11 +50,11 @@ public class BulletAbility : Attack
     {
         if (name == "Player")
         {
-            if (Input.GetButtonDown("Attack"))
+            if (AttackAction.WasPressedThisFrame())
             {
                 StartFiring(Wager);
             }
-            if (Input.GetButton("Attack")) {
+            if (AttackAction.IsInProgress()) {
                 shoot();
             }
         }

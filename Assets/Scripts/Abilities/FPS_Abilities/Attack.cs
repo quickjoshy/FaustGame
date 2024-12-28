@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class Attack : MonoBehaviour
 {
+    [SerializeField]
     protected float DefaultCost;
     [SerializeField]
     float cost;
@@ -13,6 +15,7 @@ public class Attack : MonoBehaviour
     [SerializeField]
     public float Cost
     { get { return cost; } set { cost = value; } }
+
 
     [SerializeField]
     protected Health owner;
@@ -35,12 +38,14 @@ public class Attack : MonoBehaviour
     [SerializeField]
     protected Button[] Buttons = new Button[3];
 
+    protected InputAction AttackAction;
+
     public virtual void Start() {
         owner = GetComponent<Health>();
-        player = FindAnyObjectByType<Player>();
+        player = GetComponent<Player>();
         animator = GetComponent<Animator>();
+        if(player)  AttackAction = InputSystem.actions.FindAction("Attack");
         CastingPoint = owner.CastingPoint;
-        DefaultCost = cost;
     }
 
     protected void UpdateUI() {

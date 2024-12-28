@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 7472280000574427410}
   - component: {fileID: 5208905364041581006}
   - component: {fileID: 6561823247354215847}
+  - component: {fileID: -8256004030278645726}
   m_Layer: 3
   m_Name: TurretEnemy
   m_TagString: Enemy
@@ -415,7 +416,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10447c3436b858549aef42c9c347bff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cost: 0
+  DefaultCost: 1
+  cost: 1
   owner: {fileID: 0}
   CastingPoint: {fileID: 0}
   AbilityName: 
@@ -429,3 +431,30 @@ MonoBehaviour:
   timerMax: 0.3
   BulletForce: 60
   BulletDamage: 10
+--- !u!54 &-8256004030278645726
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7725732162136997990}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0

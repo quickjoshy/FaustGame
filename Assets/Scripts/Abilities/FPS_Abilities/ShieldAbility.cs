@@ -29,13 +29,11 @@ public class ShieldAbility : Attack
     {
         base.Start();
         AbilityName = "Retribution";
-        
         shield.transform.parent = CastingPoint;
         shield.transform.localPosition = new Vector3(0f, 0f, 2.5f);
         shield.transform.localScale = new Vector3(.01f, .01f, 1);
         shield.transform.forward = CastingPoint.forward;
         shield.SetActive(false);
-        player = FindAnyObjectByType<Player>();
         if(GetComponent<Player>())
             UpdateUI();
     }
@@ -59,7 +57,7 @@ public class ShieldAbility : Attack
     public void Update()
     {
 
-        if (Input.GetButtonDown("Attack") && name == "Player") use(Wager);
+        if (name == "Player" && AttackAction.WasPressedThisFrame()) use(Wager);
 
         if (onCooldown)
         {

@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -58,11 +59,36 @@ public class Player : MonoBehaviour
 
     float kb = 0f;
 
+    [SerializeField]
+    float CamSens = 1;
+
+    InputAction JumpAction;
+    InputAction MoveAction;
+    InputAction LookAround;
+    InputAction BurstAction;
+    InputAction Attack1;
+    InputAction Attack2;
+    InputAction Attack3;
+    InputAction Attack4;
+    InputAction WagerUp;
+    InputAction WagerDown;
+    InputAction QuitAction;
     //put player stats as components on player object, can use GetComponents<Stat>() later to find all stats
     //also GetComponent(typeof(activeStat)); I THINK
 
     void Start()
     {
+        JumpAction = InputSystem.actions.FindAction("Jump");
+        MoveAction = InputSystem.actions.FindAction("Move");
+        LookAround = InputSystem.actions.FindAction("Look");
+        BurstAction = InputSystem.actions.FindAction("Burst");
+        Attack1 = InputSystem.actions.FindAction("Attack1");
+        Attack2 = InputSystem.actions.FindAction("Attack2");
+        Attack3 = InputSystem.actions.FindAction("Attack3");
+        Attack4 = InputSystem.actions.FindAction("Attack4");
+        WagerUp = InputSystem.actions.FindAction("WagerUp");
+        WagerDown = InputSystem.actions.FindAction("WagerDown");
+        QuitAction = InputSystem.actions.FindAction("Quit");
         stats = GetComponents<Stat>();
         wagerIcons = Resources.LoadAll<Sprite>("dice");
         m_transform = GetComponent<Transform>();
@@ -86,7 +112,7 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetButtonDown("Burst")) {
+        if (BurstAction.WasPressedThisFrame()) {
             if (burst.Val >= burst.Max)
             {
                 bursting = true;
@@ -105,10 +131,15 @@ public class Player : MonoBehaviour
                 activeAttack.SetBursting(false);
             }
         }
+
+        if (QuitAction.WasPerformedThisFrame()) {
+            health.Val = 0;
+        }
+
         else
         {
 
-            if (Input.GetButtonDown("WagerUp"))
+            if (WagerUp.WasPressedThisFrame())
             {
                 wager++;
                 wager = Mathf.Clamp(wager, 1, 5);
@@ -116,7 +147,7 @@ public class Player : MonoBehaviour
                 health.UpdateCostGraphic(activeAttack, wager);
                 activeAttack.Wager = wager;
             }
-            if (Input.GetButtonDown("WagerDown"))
+            if (WagerDown.WasPressedThisFrame())
             {
                 wager--;
                 wager = Mathf.Clamp(wager, 1, 5);
@@ -135,8 +166,8 @@ public class Player : MonoBehaviour
     void movementLogic()
     {
         //Everything below relates to movement
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveY = Input.GetAxisRaw("Vertical");
+        float moveX = MoveAction.ReadValue<Vector2>().x;
+        float moveY = MoveAction.ReadValue<Vector2>().y;
         falling = !Physics.CheckSphere(GroundCheck.position, GroundCheckRadius, GroundLayer);
         Vector3 move = m_transform.forward * (moveY) + m_transform.right * moveX;
 
@@ -147,7 +178,7 @@ public class Player : MonoBehaviour
 
         //falling logic
 
-        if (Input.GetButtonDown("Jump"))
+        if (JumpAction.WasPressedThisFrame())
         {
             falling = true;
             Jump();
@@ -180,11 +211,11 @@ public class Player : MonoBehaviour
     void cameraLogic()
     {
 
-        yRotation += Input.GetAxisRaw("Mouse Y");
+        yRotation += LookAround.ReadValue<Vector2>().y * CamSens;
         yRotation = Mathf.Clamp(yRotation, -90, 90);
         m_Camera.transform.localRotation = Quaternion.Euler(-yRotation, 0f, 0f);
 
-        m_transform.Rotate(0f, Input.GetAxisRaw("Mouse X"), 0f);
+        m_transform.Rotate(0f, LookAround.ReadValue<Vector2>().x * CamSens, 0f);
     }
 
     public void OnEnemyKill(int enemyHp) {
@@ -199,23 +230,14 @@ public class Player : MonoBehaviour
     }
 
     public void ChangeSpell() {
-        if (Input.GetKeyUp("1")) activeAttack = attacks[0];
-        if (Input.GetKeyUp("2")) activeAttack = attacks[1];
-        if (Input.GetKeyUp("3")) activeAttack = attacks[2];
-        if (Input.GetKeyUp("4")) activeAttack = attacks[3];
-        if(Input.GetKeyUp("1") || Input.GetKeyUp("2") || Input.GetKeyUp("3") || Input.GetKeyUp("4"))
+        if (Attack1.WasPressedThisFrame()) activeAttack = attacks[0];
+        if (Attack2.WasPressedThisFrame()) activeAttack = attacks[1];
+        if (Attack3.WasPressedThisFrame()) activeAttack = attacks[2];
+        if (Attack4.WasPressedThisFrame()) activeAttack = attacks[3];
+        if(Attack1.WasPressedThisFrame() || Attack2.WasPressedThisFrame() || Attack3.WasPressedThisFrame() || Attack4.WasPressedThisFrame())
         {
             EnableSpell();
         }
-        if (Input.GetKeyUp("p")) { 
-            health.Max = 10000; health.Val = 10000;
-            //GameObject.Find("FPS_UI").SetActive(false);
-            //this.enabled = false;
-            //UnityEngine.Cursor.lockState = CursorLockMode.Confined;
-            return;
-        }
-
-        
     }
 
     void EnableSpell() {
@@ -245,11 +267,6 @@ public class Player : MonoBehaviour
     public void Knockback(float power) {
         kb = power;
         
-    }
-
-    private void OnDestroy()
-    {
-        Application.Quit();
     }
 
 }

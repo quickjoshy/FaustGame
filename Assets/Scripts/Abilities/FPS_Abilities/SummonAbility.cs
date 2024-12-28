@@ -104,7 +104,7 @@ public class SummonAbility : Attack
 
     private void Update()
     {
-        if (Input.GetButtonDown("Attack")) animator.SetTrigger("Summon");
+        if (AttackAction.WasPressedThisFrame()) animator.SetTrigger("Summon");
     }
 
     public override void Upgrade()

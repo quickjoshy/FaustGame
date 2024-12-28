@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : Health
 {
@@ -20,7 +21,7 @@ public class PlayerHealth : Health
             if (base.Val > Max) base.Val = Max;
             HealthBar.localScale = new Vector3(.01f * base.Val * 4, 1f, 1f);
             if (base.Val <= 0)
-                kill();
+                Kill();
         }
     }
 
@@ -28,5 +29,9 @@ public class PlayerHealth : Health
 
     public void UpdateCostGraphic(Attack activeAttack, float wager) {
         this.activeAttack = activeAttack;
+    }
+
+    protected override void Kill() {
+        SceneManager.LoadScene("MainMenu");
     }
 }
