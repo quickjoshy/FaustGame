@@ -25,7 +25,7 @@ public class ShieldAbility : Attack
     float WaveSize = 1;
 
     // Start is called before the first frame update
-    public override void Start()
+    public void Awake()
     {
         base.Start();
         AbilityName = "Retribution";

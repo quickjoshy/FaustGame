@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerHealth : Health
 {
     public Attack activeAttack;
     public float wager;
+
+    [SerializeField]
+    Slider HealthSlider;
     // Start is called before the first frame update
     public override float Val
     {
@@ -19,7 +23,7 @@ public class PlayerHealth : Health
         {
             base.Val = value;
             if (base.Val > Max) base.Val = Max;
-            HealthBar.localScale = new Vector3(.01f * base.Val * 4, 1f, 1f);
+            HealthSlider.value = value;
             if (base.Val <= 0)
                 Kill();
         }

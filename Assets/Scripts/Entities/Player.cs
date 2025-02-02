@@ -62,6 +62,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     float CamSens = 1;
 
+    [SerializeField]
+    Settings Settings;
+
+    CostDisplay CostDisplay;
+
     InputAction JumpAction;
     InputAction MoveAction;
     InputAction LookAround;
@@ -78,6 +83,13 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        Settings = FindFirstObjectByType<Settings>();
+        if (Settings)
+            CamSens = Settings.CameraSensitivity;
+        else
+            CamSens = 1f;
+
+        CostDisplay = GetComponentInChildren<CostDisplay>();
         JumpAction = InputSystem.actions.FindAction("Jump");
         MoveAction = InputSystem.actions.FindAction("Move");
         LookAround = InputSystem.actions.FindAction("Look");
@@ -102,7 +114,6 @@ public class Player : MonoBehaviour
         GroundCheck = GameObject.Find("GroundCheck").transform;
         GroundLayer = LayerMask.GetMask("Environment");
         m_Camera.transform.localRotation = Quaternion.Euler(0, 0, 0);
-        health.UpdateCostGraphic(activeAttack, wager);
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         EnableSpell();
         GameObject.Find("ActiveAbilityText").GetComponent<Text>().text = string.Format("{0}", attacks[0].AbilityName);
@@ -144,7 +155,7 @@ public class Player : MonoBehaviour
                 wager++;
                 wager = Mathf.Clamp(wager, 1, 5);
                 wagerIcon.sprite = wagerIcons[(int)wager - 1];
-                health.UpdateCostGraphic(activeAttack, wager);
+                CostDisplay.UpdateCostGraphic(activeAttack, wager);
                 activeAttack.Wager = wager;
             }
             if (WagerDown.WasPressedThisFrame())
@@ -152,18 +163,18 @@ public class Player : MonoBehaviour
                 wager--;
                 wager = Mathf.Clamp(wager, 1, 5);
                 wagerIcon.sprite = wagerIcons[(int)wager - 1];
-                health.UpdateCostGraphic(activeAttack, wager);
+                CostDisplay.UpdateCostGraphic(activeAttack, wager);
                 activeAttack.Wager = wager;
             }
         }
         
-        movementLogic();
-        cameraLogic();
+        MovementLogic();
+        CameraLogic();
         ChangeSpell();
         KnockbackDecay();
     }
 
-    void movementLogic()
+    void MovementLogic()
     {
         //Everything below relates to movement
         float moveX = MoveAction.ReadValue<Vector2>().x;
@@ -208,7 +219,7 @@ public class Player : MonoBehaviour
         Debug.LogFormat("{0} jumps remaining!", jumps.Val);
     }
 
-    void cameraLogic()
+    void CameraLogic()
     {
 
         yRotation += LookAround.ReadValue<Vector2>().y * CamSens;
@@ -223,7 +234,7 @@ public class Player : MonoBehaviour
         health.Val += .25f * enemyHp;
     }
 
-    public void setActiveStat(int i) {
+    public void SetActiveStat(int i) {
         activeStat.Recovering = true;
         activeStat = stats[i];
         activeStat.Recovering = false;
@@ -237,17 +248,34 @@ public class Player : MonoBehaviour
         if(Attack1.WasPressedThisFrame() || Attack2.WasPressedThisFrame() || Attack3.WasPressedThisFrame() || Attack4.WasPressedThisFrame())
         {
             EnableSpell();
+            CostDisplay.UpdateCostGraphic(activeAttack, wager);
         }
     }
 
-    void EnableSpell() {
-        foreach (Attack attack in attacks)
-        { attack.enabled = false; 
-        
-        }
-        if(!activeAttack) activeAttack = attacks[0];
+    void EnableSpell()
+    {
+        DisableAllSpells();
+        if (!activeAttack) activeAttack = attacks[0];
         activeAttack.enabled = true;
         activeAttack.Wager = wager;
+        Debug.Log(activeAttack.AbilityName + "IS STARTING ACTIVE");
+        if (bursting) activeAttack.SetBursting(true);
+        GameObject.Find("ActiveAbilityText").GetComponent<Text>().text = string.Format("{0}", activeAttack.AbilityName);
+    }
+
+    public void DisableAllSpells()
+    {
+        foreach (Attack attack in attacks)
+        {
+            attack.enabled = false;
+        }
+    }
+
+    public void SetActiveSpell(Attack attack) {
+        DisableAllSpells();
+        activeAttack = attack;
+        activeAttack.Wager = wager;
+        attack.enabled = true;
         if (bursting) activeAttack.SetBursting(true);
         GameObject.Find("ActiveAbilityText").GetComponent<Text>().text = string.Format("{0}", activeAttack.AbilityName);
     }

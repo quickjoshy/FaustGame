@@ -15,6 +15,14 @@ public class AbilityUpgrade : MonoBehaviour
     [SerializeField]
     protected Button[] Buttons = new Button[3];
 
+    Player Player;
+    Attack ActiveAttack;
+
+    private void Start()
+    {
+        Player = GameObject.FindAnyObjectByType<Player>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         Player player = other.gameObject.GetComponent<Player>();
@@ -32,11 +40,12 @@ public class AbilityUpgrade : MonoBehaviour
                     }
             }
             Time.timeScale = 0f;
+            Player.DisableAllSpells();
             Debug.Log("Time Slow!");
         
 
         Cursor.lockState = CursorLockMode.Confined;
-
+        Player.enabled = false;
         for (int i = 0; i < 3; i++) {
             Text text = Buttons[i].gameObject.transform.GetChild(0).GetComponent<Text>();
             text.text = AttackChoices[i].AbilityName;

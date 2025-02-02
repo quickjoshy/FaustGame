@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 public class Attack : MonoBehaviour
 {
     [SerializeField]
-    protected float DefaultCost;
+    public float DefaultCost;
     [SerializeField]
     float cost;
 
@@ -20,6 +20,7 @@ public class Attack : MonoBehaviour
     [SerializeField]
     protected Health owner;
 
+    [SerializeField]
     protected Player player;
 
     [SerializeField]
@@ -44,7 +45,11 @@ public class Attack : MonoBehaviour
         owner = GetComponent<Health>();
         player = GetComponent<Player>();
         animator = GetComponent<Animator>();
-        if(player)  AttackAction = InputSystem.actions.FindAction("Attack");
+        if (player)
+        {
+            AttackAction = InputSystem.actions.FindAction("Attack");
+            Debug.Log(AbilityName + " for player loaded");
+        }
         CastingPoint = owner.CastingPoint;
     }
 
@@ -93,6 +98,8 @@ public class Attack : MonoBehaviour
         }
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
+        player.enabled = true;
+        player.SetActiveSpell(this);
     }
 
     protected void PrepButtons(string label1, string label2, string label3) {
