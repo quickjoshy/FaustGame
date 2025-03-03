@@ -444,98 +444,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.037888832, y: 0.16319178, z: 0.0038883053}
     m_Extent: {x: 0.07969911, y: 0.18717377, z: 0.057023525}
   m_DirtyAABB: 0
---- !u!1 &1960048255120506019
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3070039089433028639}
-  - component: {fileID: 4352603033279172526}
-  - component: {fileID: 3693372308355076140}
-  - component: {fileID: 5640864312491446188}
-  m_Layer: 5
-  m_Name: SurvivalTimer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &3070039089433028639
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960048255120506019}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5322792592894611561}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 39.88269, y: -16.737793}
-  m_SizeDelta: {x: 79.7654, y: 33.4756}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &4352603033279172526
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960048255120506019}
-  m_CullTransparentMesh: 1
---- !u!114 &3693372308355076140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960048255120506019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 30
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 40
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: 
---- !u!114 &5640864312491446188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960048255120506019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 460ed44d8ffd0c145a46a017f4cd74c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2220032513074296323
 GameObject:
   m_ObjectHideFlags: 0
@@ -1814,6 +1722,7 @@ MonoBehaviour:
   DefaultCost: 1
   cost: 1
   owner: {fileID: 2378510487898966078}
+  player: {fileID: 0}
   CastingPoint: {fileID: 206350544693229110}
   AbilityName: Malice
   Wager: 0
@@ -1838,6 +1747,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f00e46290c2b0c4f921943185098854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WaveManager: {fileID: 0}
   GroundCheckRadius: 0.2
   activeStat: {fileID: 2378510487898966078}
   activeAttack: {fileID: 0}
@@ -1960,6 +1870,7 @@ MonoBehaviour:
   DefaultCost: 3
   cost: 3
   owner: {fileID: 2378510487898966078}
+  player: {fileID: 0}
   CastingPoint: {fileID: 7146374081180057623}
   AbilityName: Retribution
   Wager: 0
@@ -1988,6 +1899,7 @@ MonoBehaviour:
   DefaultCost: 10
   cost: 10
   owner: {fileID: 0}
+  player: {fileID: 0}
   CastingPoint: {fileID: 0}
   AbilityName: Communion
   Wager: 0
@@ -2061,6 +1973,7 @@ MonoBehaviour:
   DefaultCost: 5
   cost: 5
   owner: {fileID: 0}
+  player: {fileID: 0}
   CastingPoint: {fileID: 7146374081180057623}
   AbilityName: 
   Wager: 0
@@ -2070,8 +1983,8 @@ MonoBehaviour:
   - {fileID: 6324781333713896099}
   - {fileID: 5212719970026565693}
   - {fileID: 1174978668033873579}
-  DamageNumber: 25
-  ChargingFactor: 0.5
+  KnockbackMult: 0
+  DamageMult: 0
   Range: 60
   Charging: 0
   ExplosionPrefab: {fileID: 8693611181220438722, guid: 3df0f81baa7688047bebe44d81cce1c2, type: 3}
@@ -3120,7 +3033,6 @@ RectTransform:
   - {fileID: 8538992107470673817}
   - {fileID: 287135880980249771}
   - {fileID: 6319943077128470234}
-  - {fileID: 3070039089433028639}
   - {fileID: 5693682624178489596}
   m_Father: {fileID: 206350544693229110}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

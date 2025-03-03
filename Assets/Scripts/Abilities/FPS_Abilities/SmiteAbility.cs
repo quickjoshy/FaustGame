@@ -11,12 +11,11 @@ public class SmiteAbility : Attack
 
     GameObject smite;
 
+    [SerializeField]
+    int KnockbackMult;
 
     [SerializeField]
-    float DamageNumber = 5f;
-
-    [SerializeField]
-    float ChargingFactor = .5f;
+    float DamageMult;
 
     [SerializeField]
     int Range = 60;
@@ -67,8 +66,7 @@ public class SmiteAbility : Attack
         }
 
         if (Charging) {
-            Charge += Time.deltaTime * Wager * DamageNumber * (1 + .03f * Wager) * ChargingFactor;
-            Debug.Log(Charge);
+            Charge += Time.deltaTime * Wager * (1 + .03f * Wager);
             if (PlayerBurst && player.bursting)
                 PlayerBurst.Val -= 30 * Cost * Time.deltaTime;
             owner.Val -= (Cost * Wager * Time.deltaTime);
@@ -80,16 +78,15 @@ public class SmiteAbility : Attack
         Vector3 CastPoint = cam.transform.position;
         Vector3 EndPoint;
         smite = Instantiate(Resources.Load("Smite") as GameObject);
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, Range, RayMask))
-        {
+        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, Range, RayMask))
             EndPoint = hit.point;
-        }
         else
-        {
             EndPoint = cam.transform.position + cam.transform.forward * Range;
-        }
 
-        
+
+
+
+
         float distance = Vector3.Distance(CastPoint, EndPoint);
         Vector3 halfway = (EndPoint + CastPoint)/2;
 
@@ -106,10 +103,11 @@ public class SmiteAbility : Attack
 
     private void SpawnExplosion(Vector3 Point)
     {
-        GameObject explosion = Instantiate(ExplosionPrefab, Point, Quaternion.identity);
-        explosion.GetComponent<SmiteExplosion>().SetCharge(Charge);
-        explosion.GetComponent<SmiteExplosion>().SetCharge(Charge);
-        explosion.tag = tag;
+        GameObject explosionObject = Instantiate(ExplosionPrefab, Point, Quaternion.identity);
+        explosionObject.tag = tag;
+        SmiteExplosion explosionScript = explosionObject.GetComponent<SmiteExplosion>();
+        explosionScript.SetValues(Charge, DamageMult, KnockbackMult);
+        
     }
 
     /*
@@ -168,12 +166,12 @@ public class SmiteAbility : Attack
     }
 
     void DamageUp() {
-        DamageNumber += 20f;
+        DamageMult += .3f;
         DisableButtons();
     }
 
     void ForceUp() {
-        //KnockbackPower += 5;
+        KnockbackMult++;
         DisableButtons();
     }
 

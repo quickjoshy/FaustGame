@@ -17,6 +17,9 @@ public class Player : MonoBehaviour
     Transform GroundCheck;
 
     [SerializeField]
+    WaveManager WaveManager;
+
+    [SerializeField]
     float GroundCheckRadius;
     Rigidbody Rb;
 
@@ -85,9 +88,9 @@ public class Player : MonoBehaviour
     {
         Settings = FindFirstObjectByType<Settings>();
         if (Settings)
-            CamSens = Settings.CameraSensitivity;
+            CamSens = Settings.CameraSensitivity * .15f;
         else
-            CamSens = 1f;
+            CamSens = .15f;
 
         CostDisplay = GetComponentInChildren<CostDisplay>();
         JumpAction = InputSystem.actions.FindAction("Jump");
@@ -232,6 +235,9 @@ public class Player : MonoBehaviour
     public void OnEnemyKill(int enemyHp) {
         burst.Val += burst.Regen;
         health.Val += .25f * enemyHp;
+        if (WaveManager) {
+            WaveManager.OnEnemyKill();
+        }
     }
 
     public void SetActiveStat(int i) {
@@ -295,6 +301,10 @@ public class Player : MonoBehaviour
     public void Knockback(float power) {
         kb = power;
         
+    }
+
+    public Attack GetActiveAttack() {
+        return activeAttack;
     }
 
 }

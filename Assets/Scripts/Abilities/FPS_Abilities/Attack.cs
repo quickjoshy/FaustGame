@@ -98,8 +98,9 @@ public class Attack : MonoBehaviour
         }
         Time.timeScale = 1;
         Cursor.lockState = CursorLockMode.Locked;
+        Attack CurrentSpell = player.GetActiveAttack();
         player.enabled = true;
-        player.SetActiveSpell(this);
+        player.SetActiveSpell(CurrentSpell);
     }
 
     protected void PrepButtons(string label1, string label2, string label3) {

@@ -6,8 +6,10 @@ public class SmiteExplosion : MonoBehaviour
 
     float Timer = 0f;
     readonly float TimerMax = .3f;
-    readonly float ScalingFactor = .1f;
+    float RadiusMult = 1;
     float Charge;
+    float DamageMult;
+    int KnockbackMult;
     bool Expanding = true;
 
     // Update is called once per frame
@@ -18,17 +20,16 @@ public class SmiteExplosion : MonoBehaviour
         {
             if (Timer < TimerMax)
             {
-                transform.localScale += Vector3.one * Charge * ScalingFactor * Time.deltaTime;
+                transform.localScale += Vector3.one * Charge * RadiusMult * Time.deltaTime;
                 Timer += Time.deltaTime;
                 //Debug.Log(transform.localScale);
-                Debug.LogFormat("Time:{0}", Timer);
             } else
             Expanding = false;
         }
         else {
             if (Timer > 0)
             {
-                transform.localScale += Vector3.one * Charge * ScalingFactor * Time.deltaTime;
+                transform.localScale += Vector3.one * Charge * RadiusMult * Time.deltaTime;
                 Timer -= Time.deltaTime;
                 //Debug.Log(transform.localScale);
             }
@@ -37,8 +38,11 @@ public class SmiteExplosion : MonoBehaviour
 
     }
 
-    public void SetCharge(float charge) {
+    public void SetValues(float charge, float damageMult, int knockbackMult) {
         this.Charge = charge;
+        this.DamageMult = damageMult;
+        this.KnockbackMult = knockbackMult;
+        Debug.LogFormat("Smite Damage: {0}; DamageMult: {1}", Charge * DamageMult, DamageMult);
     }
 
 
@@ -53,19 +57,20 @@ public class SmiteExplosion : MonoBehaviour
 
         if (rb)
         {
-            rb.AddForce((other.transform.position - transform.position) * ScalingFactor, ForceMode.Impulse);
+            rb.AddForce((other.transform.position - transform.position), ForceMode.Impulse);
         }
 
 
         if (player)
         {
             //StartCoroutine(force, 1f);
-            player.Knockback(Charge * ScalingFactor);
+            player.Knockback(Charge * RadiusMult * KnockbackMult);
         }
 
         if (hp && !CompareTag(other.tag))
         {
-            hp.Val -= Charge;
+            hp.Val -= Charge * DamageMult;
         }
     }
+
 }
