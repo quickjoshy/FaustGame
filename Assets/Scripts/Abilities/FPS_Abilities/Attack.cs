@@ -7,12 +7,9 @@ using UnityEngine.InputSystem;
 
 public class Attack : MonoBehaviour
 {
-    [SerializeField]
     public float DefaultCost;
     [SerializeField]
     float cost;
-
-    [SerializeField]
     public float Cost
     { get { return cost; } set { cost = value; } }
 
@@ -40,6 +37,8 @@ public class Attack : MonoBehaviour
     protected Button[] Buttons = new Button[3];
 
     protected InputAction AttackAction;
+
+    public List<Action> UpgradeFunctions = new List<Action>();
 
     public virtual void Start() {
         owner = GetComponent<Health>();

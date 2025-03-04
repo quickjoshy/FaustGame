@@ -30,6 +30,10 @@ public class BulletAbility : Attack
         bullet = Resources.Load("Bullet") as GameObject;
         owner = GetComponent<Health>();
         if (name == "Player") UpdateUI();
+
+        UpgradeFunctions.Add(DamageUp);
+        UpgradeFunctions.Add(ForceUp);
+        UpgradeFunctions.Add(RateUp);
     }
 
     public void StartFiring(float wager)
@@ -54,17 +58,20 @@ public class BulletAbility : Attack
             {
                 StartFiring(Wager);
             }
-            if (AttackAction.IsInProgress()) {
+            if (AttackAction.IsInProgress())
+            {
                 shoot();
             }
         }
-        else {
+        else
+        {
             shoot();
         }
 
     }
 
-    void shoot() {
+    void shoot()
+    {
 
         if (animator)
         {
@@ -77,7 +84,7 @@ public class BulletAbility : Attack
         {
             CreateBullet();
             timer = 0f;
-            
+
         }
     }
 
@@ -90,16 +97,18 @@ public class BulletAbility : Attack
         bulletObj.owner = owner;
         bulletObj.baseDmg = BulletDamage;
         newBullet.transform.position = CastingPoint.position + CastingPoint.forward;
-       
+
         newBullet.GetComponent<Rigidbody>().AddForce(CastingPoint.forward * BulletForce, ForceMode.Impulse);
         owner.Val -= Cost * Wager;
     }
 
-    public void stopShooting() {
+    public void stopShooting()
+    {
         animator.SetBool("IsShooting", false);
     }
 
-    public override void Upgrade() {
+    public override void Upgrade()
+    {
         PrepButtons("Damage", "Force", "Fire Rate");
 
 
@@ -108,20 +117,25 @@ public class BulletAbility : Attack
         Buttons[2].onClick.AddListener(RateUp);
     }
 
-    void DamageUp() {
+    void DamageUp()
+    {
         BulletDamage += 5f;
-        DisableButtons();
+ 
+        Debug.Log("Malice Dmg!");
     }
 
-    void ForceUp() {
+    void ForceUp()
+    {
         BulletForce += 20;
-        DisableButtons();
+        Debug.Log("Malice Range!");
     }
 
-    void RateUp() {
+    void RateUp()
+    {
         animator.SetFloat("ShootingSpeed", animator.GetFloat("ShootingSpeed") + .30f);
-        DisableButtons();
+        Debug.Log("Malice Rate!");
     }
+
 
     
 }

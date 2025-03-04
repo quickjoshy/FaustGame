@@ -36,6 +36,10 @@ public class ShieldAbility : Attack
         shield.SetActive(false);
         if(GetComponent<Player>())
             UpdateUI();
+
+        UpgradeFunctions.Add(ShieldUp);
+        UpgradeFunctions.Add(WaveUp);
+        UpgradeFunctions.Add(CostDown);
     }
 
     // Update is called once per frame
@@ -132,18 +136,15 @@ public class ShieldAbility : Attack
     void ShieldUp() {
 
         ShieldSize += 1f;
-        DisableButtons();
     
     }
 
     void WaveUp() {
         WaveSize += .5f;
-        DisableButtons();
     }
 
     void CostDown() {
         DefaultCost *= .6f;
         Cost = DefaultCost;
-        DisableButtons();
     }
 }

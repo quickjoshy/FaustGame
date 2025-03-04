@@ -46,7 +46,9 @@ public class SmiteAbility : Attack
         RayMask = LayerMask.GetMask("Environment");
         PlayerBurst = GetComponent<Burst>();
         UpdateUI();
-
+        UpgradeFunctions.Add(DamageUp);
+        UpgradeFunctions.Add(ForceUp);
+        UpgradeFunctions.Add(CostDown);
     }
 
     // Update is called once per frame
@@ -167,18 +169,15 @@ public class SmiteAbility : Attack
 
     void DamageUp() {
         DamageMult += .3f;
-        DisableButtons();
     }
 
     void ForceUp() {
         KnockbackMult++;
-        DisableButtons();
     }
 
     void CostDown() {
         DefaultCost *= .6f;
         Cost = DefaultCost;
-        DisableButtons();
     }
 
 }

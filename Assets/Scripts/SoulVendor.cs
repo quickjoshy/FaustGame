@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,9 @@ public class SoulVendor : MonoBehaviour
     [SerializeField]
     GameObject UpgradeUI;
 
+    [SerializeField]
+    List<UpgradeButton> UpgradeButtons = new List<UpgradeButton>();
+
     bool IsInMenu = false;
 
     private void Start()
@@ -17,14 +21,19 @@ public class SoulVendor : MonoBehaviour
         Interactable.OnEnterRange += PlayerEnterRange;
         Interactable.OnExitRange += PlayerExitRange;
         Interactable.OnInteract += PlayerInteract;
+
+        
     }
 
     private void PlayerInteract(object sender, Interactable.OnInteractArgs e)
     { //send player through as an arg and freeze his movement
         Player player = e.Player;
         Debug.Log("Player Interacted!");
-        if(!IsInMenu)
+        if (!IsInMenu) { 
             OpenMenu(player);
+            foreach (UpgradeButton Button in UpgradeButtons)
+                Button.Player = player;
+        }
         else 
             CloseMenu(player);
     }

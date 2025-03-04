@@ -539,7 +539,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &302050328
 RectTransform:
   m_ObjectHideFlags: 0
@@ -863,7 +863,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &866721475
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1481,14 +1481,39 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "R - Burst (When yellow bar is full)\n1,2,3,4 - Swap Abilities\nSpace -
-    Jump (You get 2 extra jumps in the air)\nQ,E - Adjust Wager (Changes Ability
-    Cost and Power)\nDouble Tap Escape - Quit\nController is supported but the camera
-    sensitivity is cooked and im too lazy to list the controls here\n\nAbilities
-    drain your HP! Increasing your wager makes your abilities stronger, but more
-    costly. \nBursting gives you a temporary power boost and eliminates the cost
-    of your abilities! \nDefeat enemies to regain HP and Burst.\nCollect the glowing
-    upgrades around the map for even more power!\n\n"
+  m_Text: '
+
+    Welcome to Faust! Here''s how to play:
+
+
+    You have 4 Abilities,
+    which you can change with the number keys (1,2,3,4)
+
+
+    These abilities cost
+    HP in order to cast.
+
+
+    Using Q and E, you can increase your wager, making
+    your abilities more powerful, but making them cost more.
+
+
+    Defeating enemies
+    rewards you with Health and builds your burst meter.
+
+
+    After filling your
+    Burst meter, press R to activate Burst.
+
+
+    Burst makes your abilities extra
+    powerful, and removes the health cost!
+
+
+    Press F near the rainbow cube in
+    order to access the upgrade shop!
+
+'
 --- !u!222 &1399368927
 CanvasRenderer:
   m_ObjectHideFlags: 0

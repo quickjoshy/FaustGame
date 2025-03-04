@@ -6,9 +6,12 @@ public class Health : Stat
 {
     public Transform CastingPoint;
     public RectTransform HealthBar;
+
+    public int SoulReward = 0;
     private void Start()
     {
         if (CastingPoint == null) CastingPoint = transform;
+        if (SoulReward == 0) SoulReward = (int)Max;
     }
 
     public override float Val
@@ -31,8 +34,7 @@ public class Health : Stat
     protected virtual void Kill() {
         Player player = FindAnyObjectByType<Player>();
         RTS_Player Rts_Player = FindAnyObjectByType<RTS_Player>();
-        if (player && gameObject.tag == "Enemy") player.OnEnemyKill((int)Max);
-        if (Rts_Player && gameObject.tag == "Enemy") Rts_Player.OnEnemyKill((int)Max);
+        if (player && gameObject.tag == "Enemy") player.OnEnemyKill(this);
         Destroy(gameObject);
     }
 

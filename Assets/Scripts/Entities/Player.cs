@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     GameObject m_Camera;
     Transform GroundCheck;
 
+    public int Souls;
+
     [SerializeField]
     WaveManager WaveManager;
 
@@ -48,6 +50,9 @@ public class Player : MonoBehaviour
     Jumps jumps;
 
     public UnityEngine.UI.Image wagerIcon;
+
+    [SerializeField]
+    Text SoulDisplay;
 
     [SerializeField]
     Sprite[] wagerIcons = new Sprite[6];
@@ -232,12 +237,19 @@ public class Player : MonoBehaviour
         m_transform.Rotate(0f, LookAround.ReadValue<Vector2>().x * CamSens, 0f);
     }
 
-    public void OnEnemyKill(int enemyHp) {
+    public void OnEnemyKill(Health enemyHealth) {
         burst.Val += burst.Regen;
-        health.Val += .25f * enemyHp;
+        health.Val += .25f * enemyHealth.Max;
+        Souls += enemyHealth.SoulReward;
         if (WaveManager) {
             WaveManager.OnEnemyKill();
         }
+        UpdateSoulDisplay();
+    }
+
+    private void UpdateSoulDisplay()
+    {
+        SoulDisplay.text = Souls.ToString();
     }
 
     public void SetActiveStat(int i) {
@@ -303,8 +315,22 @@ public class Player : MonoBehaviour
         
     }
 
+    public Attack GetAttackByName(string attackName) {
+        Debug.Log("Looking for attack: " + attackName);
+        foreach (Attack attack in attacks) {
+            if (attack.AbilityName == attackName) return attack;
+        }
+        Debug.Log(attackName + " not found!");
+        return null;
+    }
+
     public Attack GetActiveAttack() {
         return activeAttack;
+    }
+
+    public void ChangeSouls(int change) {
+        Souls += change;
+        UpdateSoulDisplay();
     }
 
 }

@@ -35,6 +35,9 @@ public class SummonAbility : Attack
             break;
         }
         UpdateUI();
+        UpgradeFunctions.Add(StockUp);
+        UpgradeFunctions.Add(HealthUp);
+        UpgradeFunctions.Add(CostDown);
     }
 
     public void BeginSpawn()
@@ -118,17 +121,14 @@ public class SummonAbility : Attack
     void StockUp() {
         NumTurrets++;
         turrets.Add(null);
-        DisableButtons();
     }
 
     void HealthUp() {
         HealthMult += 1;
-        DisableButtons();
     }
 
     void CostDown() {
         DefaultCost *= .6f;
         Cost = DefaultCost;
-        DisableButtons();
     }
 }
