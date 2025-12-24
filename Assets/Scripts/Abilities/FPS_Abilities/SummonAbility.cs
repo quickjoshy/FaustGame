@@ -35,9 +35,6 @@ public class SummonAbility : Attack
             break;
         }
         UpdateUI();
-        UpgradeFunctions.Add(StockUp);
-        UpgradeFunctions.Add(HealthUp);
-        UpgradeFunctions.Add(CostDown);
     }
 
     public void BeginSpawn()
@@ -75,15 +72,20 @@ public class SummonAbility : Attack
         if (addTurretToArray(turret.transform))
         {
             turret.transform.position = SpawnPosition + new Vector3(0, .5f, 0);
-            turret.GetComponent<BulletAbility>().Wager = Wager;
+            
+            if (burst.isBursting)
+            {
+                burst.Val -= 15;
+                Power = BurstPower;
+            }
+            else {
+                owner.Health -= Power * Cost;
+            }
+            turret.GetComponent<BulletAbility>().Power = Power;
             turret.GetComponent<BulletAbility>().Cost = HealthMult;
             turret.GetComponent<BulletAbility>().BulletDamage *= DmgMult;
-            turret.GetComponent<Health>().Max = Wager * NumShots * HealthMult;
-            turret.GetComponent<Health>().Val = Wager * NumShots * HealthMult;
-            if (player.bursting)
-                gameObject.GetComponent<Burst>().Val -= 15;
-            else
-                owner.Val -= Wager * Cost;
+            turret.GetComponent<Entity>().MaxHealth = Power * NumShots * HealthMult;
+            turret.GetComponent<Entity>().Health = Power * NumShots * HealthMult;
             yield return new WaitForSeconds(1);
         }
 
@@ -108,27 +110,5 @@ public class SummonAbility : Attack
     private void Update()
     {
         if (AttackAction.WasPressedThisFrame()) animator.SetTrigger("Summon");
-    }
-
-    public override void Upgrade()
-    {
-        PrepButtons("Stock", "Health", "Cost");
-        Buttons[0].onClick.AddListener(StockUp);
-        Buttons[1].onClick.AddListener(HealthUp);
-        Buttons[2].onClick.AddListener(CostDown);
-    }
-
-    void StockUp() {
-        NumTurrets++;
-        turrets.Add(null);
-    }
-
-    void HealthUp() {
-        HealthMult += 1;
-    }
-
-    void CostDown() {
-        DefaultCost *= .6f;
-        Cost = DefaultCost;
     }
 }

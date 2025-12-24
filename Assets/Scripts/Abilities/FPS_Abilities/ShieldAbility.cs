@@ -14,7 +14,7 @@ public class ShieldAbility : Attack
 
     GameObject wave;
     bool active = false;
-    private Health hp;
+    private Entity shieldEntity;
     private bool onCooldown;
     float Cooldown = 0f;
 
@@ -37,9 +37,11 @@ public class ShieldAbility : Attack
         if(GetComponent<Player>())
             UpdateUI();
 
-        UpgradeFunctions.Add(ShieldUp);
-        UpgradeFunctions.Add(WaveUp);
-        UpgradeFunctions.Add(CostDown);
+    }
+
+    private void DisableShield() {
+        shield.transform.localScale = new Vector3(.01f, .01f, .4f);
+        onShieldDisable();
     }
 
     // Update is called once per frame
@@ -52,8 +54,7 @@ public class ShieldAbility : Attack
 
         if (!active)
         {
-            shield.transform.localScale = new Vector3(.01f, .01f, .4f);
-            onShieldDisable();
+            DisableShield();
         }
 
     }
@@ -61,7 +62,7 @@ public class ShieldAbility : Attack
     public void Update()
     {
 
-        if (name == "Player" && AttackAction.WasPressedThisFrame()) use(Wager);
+        if (name == "Player" && AttackAction.WasPressedThisFrame()) use(Power);
 
         if (onCooldown)
         {
@@ -73,11 +74,14 @@ public class ShieldAbility : Attack
             }
         }
 
-        float power = Wager * (1 + (.1f * Wager));
+        float power = Power * (1 + (.1f * Power));
         if (active)
         {
-            if (player && owner.gameObject != player.gameObject) owner.Val -= Cost * Time.deltaTime;
-            else owner.Val -= Cost * Time.deltaTime * Wager;
+            if (burst.isBursting) {
+                Power = 6;
+            }
+            else
+                owner.Health -= Cost * Time.deltaTime * Power;
 
             if (!shield) return;
 
@@ -94,14 +98,13 @@ public class ShieldAbility : Attack
     }
 
     void onShieldDisable() {
-        if (player == null) return;
-        hp = shield.GetComponent<Health>();
+        shieldEntity = shield.GetComponent<Entity>();
 
         if (animator) {
             animator.SetTrigger("ShieldWave");
             return;
         }
-        if (hp.Val != hp.Max)
+        if (shieldEntity.Health < shieldEntity.MaxHealth)
         {
             ShootWave();
             
@@ -111,40 +114,21 @@ public class ShieldAbility : Attack
     public void ShootWave()
     {
         Vector3 shieldScale = gameObject.transform.localScale;
-        float dmgTaken = .5f * Wager * (hp.Max - hp.Val);
-        if (onCooldown || dmgTaken == 0) return;
+        if (burst.isBursting) {
+            Power = 6;
+        }
+        float power = .5f * Power * (shieldEntity.MaxHealth - shieldEntity.Health);
+        if (onCooldown || power == 0) return;
         onCooldown = true;
         wave = Instantiate(WavePrefab);
-        wave.GetComponent<WaveObject>().power = dmgTaken;
+        wave.GetComponent<WaveObject>().power = power;
         wave.GetComponent<WaveObject>().owner = owner;
         wave.transform.forward = shield.transform.forward;
         wave.transform.localScale = new Vector3(1, 1, 1) * WaveSize;
         wave.transform.position = shield.transform.position;
         wave.GetComponent<Rigidbody>().AddForce(wave.transform.forward * 10, ForceMode.Impulse);
         wave.tag = CastingPoint.tag;
-        hp.Val = hp.Max;
+        shieldEntity.Health = shieldEntity.MaxHealth;
     }
 
-    public override void Upgrade()
-    {
-        PrepButtons("Shield Size", "Wave Size", "Cost");
-        Buttons[0].onClick.AddListener(ShieldUp);
-        Buttons[1].onClick.AddListener(WaveUp);
-        Buttons[2].onClick.AddListener(CostDown);
-    }
-
-    void ShieldUp() {
-
-        ShieldSize += 1f;
-    
-    }
-
-    void WaveUp() {
-        WaveSize += .5f;
-    }
-
-    void CostDown() {
-        DefaultCost *= .6f;
-        Cost = DefaultCost;
-    }
 }

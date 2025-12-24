@@ -28,26 +28,12 @@ public class BulletAbility : Attack
         base.Start();
         AbilityName = "Malice";
         bullet = Resources.Load("Bullet") as GameObject;
-        owner = GetComponent<Health>();
         if (name == "Player") UpdateUI();
-
-        UpgradeFunctions.Add(DamageUp);
-        UpgradeFunctions.Add(ForceUp);
-        UpgradeFunctions.Add(RateUp);
     }
 
     public void StartFiring(float wager)
     {
         timer = timerMax;
-        if (player != null)
-        {
-            if (player.bursting) Cost = 0f;
-            else
-            {
-                Cost = 1f;
-            }
-        }
-
     }
 
     void Update()
@@ -56,7 +42,7 @@ public class BulletAbility : Attack
         {
             if (AttackAction.WasPressedThisFrame())
             {
-                StartFiring(Wager);
+                StartFiring(Power);
             }
             if (AttackAction.IsInProgress())
             {
@@ -90,52 +76,29 @@ public class BulletAbility : Attack
 
     public void CreateBullet()
     {
-        KiteBehavior kite = GetComponent<KiteBehavior>();
         GameObject newBullet = Instantiate(bullet);
         BulletObject bulletObj = newBullet.AddComponent<BulletObject>();
-        bulletObj.Power = Wager;
+        
         bulletObj.owner = owner;
         bulletObj.baseDmg = BulletDamage;
         newBullet.transform.position = CastingPoint.position + CastingPoint.forward;
 
         newBullet.GetComponent<Rigidbody>().AddForce(CastingPoint.forward * BulletForce, ForceMode.Impulse);
-        owner.Val -= Cost * Wager;
+        if (!burst.isBursting)
+        {
+            bulletObj.Power = Power;
+            owner.Health -= Cost * Power;
+        }
+        else {
+            bulletObj.Power = BurstPower;
+        }
+            
     }
 
     public void stopShooting()
     {
         animator.SetBool("IsShooting", false);
     }
-
-    public override void Upgrade()
-    {
-        PrepButtons("Damage", "Force", "Fire Rate");
-
-
-        Buttons[0].onClick.AddListener(DamageUp);
-        Buttons[1].onClick.AddListener(ForceUp);
-        Buttons[2].onClick.AddListener(RateUp);
-    }
-
-    void DamageUp()
-    {
-        BulletDamage += 5f;
- 
-        Debug.Log("Malice Dmg!");
-    }
-
-    void ForceUp()
-    {
-        BulletForce += 20;
-        Debug.Log("Malice Range!");
-    }
-
-    void RateUp()
-    {
-        animator.SetFloat("ShootingSpeed", animator.GetFloat("ShootingSpeed") + .30f);
-        Debug.Log("Malice Rate!");
-    }
-
 
     
 }

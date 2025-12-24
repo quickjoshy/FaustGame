@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4944439689529092670}
   - component: {fileID: 2540556852778277251}
   - component: {fileID: -4066735517227442897}
+  - component: {fileID: 6833511293843727451}
   m_Layer: 3
   m_Name: FriendlyTurret
   m_TagString: Player
@@ -66,6 +67,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -87,9 +90,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &4944439689529092666
 BoxCollider:
@@ -124,13 +129,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df77899a2fb70544b1f13fdce513275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  val: 100
-  max: 100
-  regen: 1
-  cost: 1
-  recovering: 0
   CastingPoint: {fileID: 4944439689529092671}
-  HealthBar: {fileID: 0}
+  SoulReward: 0
+  _health: 0
+  MaxHealth: 0
 --- !u!114 &4944439689529092670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,17 +145,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10447c3436b858549aef42c9c347bff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DefaultCost: 0
   cost: 0
   owner: {fileID: 0}
   CastingPoint: {fileID: 0}
   AbilityName: 
-  Wager: 0
+  Power: 2
+  BurstPower: 6
   animator: {fileID: 0}
   cam: {fileID: 0}
   Buttons:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  AttackAction:
+    m_Name: Attack
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 08585d5e-cea1-409b-a524-bd7e4bf5ed6b
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   timerMax: 0.4
   BulletForce: 70
   BulletDamage: 10
@@ -164,10 +177,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4944439689529092661}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -201,3 +214,23 @@ MonoBehaviour:
   Target: {fileID: 0}
   Power: 0
   timerMax: 1
+--- !u!114 &6833511293843727451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4944439689529092661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56434054feedbe7408de77bfcc92b728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Burst
+  val: 0
+  max: 0
+  regen: 0
+  cost: 0
+  recovering: 1
+  burstBar: {fileID: 0}
+  isBursting: 0
+  drain: 0

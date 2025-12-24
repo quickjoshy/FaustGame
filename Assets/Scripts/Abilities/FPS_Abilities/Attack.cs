@@ -15,17 +15,17 @@ public class Attack : MonoBehaviour
 
 
     [SerializeField]
-    protected Health owner;
+    protected Entity owner;
 
-    [SerializeField]
-    protected Player player;
+    protected Burst burst;
 
     [SerializeField]
     protected Transform CastingPoint;
 
     public string AbilityName;
 
-    public float Wager;
+    public float Power;
+    public float BurstPower;
 
     [SerializeField]
     protected Animator animator;
@@ -36,19 +36,14 @@ public class Attack : MonoBehaviour
     [SerializeField]
     protected Button[] Buttons = new Button[3];
 
-    protected InputAction AttackAction;
+    public InputAction AttackAction;
 
     public List<Action> UpgradeFunctions = new List<Action>();
 
     public virtual void Start() {
-        owner = GetComponent<Health>();
-        player = GetComponent<Player>();
+        owner = GetComponent<Entity>();
         animator = GetComponent<Animator>();
-        if (player)
-        {
-            AttackAction = InputSystem.actions.FindAction("Attack");
-            Debug.Log(AbilityName + " for player loaded");
-        }
+        burst = GetComponent<Burst>();
         CastingPoint = owner.CastingPoint;
     }
 
@@ -66,55 +61,8 @@ public class Attack : MonoBehaviour
         }
     }
 
-    public void OnDisable()
+    public virtual void OnDisable()
     {
         if (animator) animator.SetBool(AbilityName, false);
-    }
-
-    public void SetBursting(bool value) {
-        if (value)
-        {
-            Wager = 6f;
-            Cost = 0f;
-        }
-        else
-        {
-            Wager = player.wager;
-            Cost = DefaultCost;
-        }
-    }
-
-    public virtual void Upgrade()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected void DisableButtons()
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            Buttons[i].gameObject.SetActive(false);
-        }
-        Time.timeScale = 1;
-        Cursor.lockState = CursorLockMode.Locked;
-        Attack CurrentSpell = player.GetActiveAttack();
-        player.enabled = true;
-        player.SetActiveSpell(CurrentSpell);
-    }
-
-    protected void PrepButtons(string label1, string label2, string label3) {
-        for (int i = 0; i < 3; i++)
-        {
-            Buttons[i].onClick.RemoveAllListeners();
-        }
-
-        Text text = Buttons[0].gameObject.transform.GetChild(0).GetComponent<Text>();
-        text.text = label1;
-
-        text = Buttons[1].gameObject.transform.GetChild(0).GetComponent<Text>();
-        text.text = label2;
-
-        text = Buttons[2].gameObject.transform.GetChild(0).GetComponent<Text>();
-        text.text = label3;
     }
 }

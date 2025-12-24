@@ -7,6 +7,8 @@ public class Burst : Stat
 {
     public RectTransform burstBar;
 
+    public bool isBursting = false;
+
     public override float Val { get => base.Val; set {
             burstBar.localScale = new Vector3(base.Val * .1f, 1f, 1f);
             base.Val = value; 
@@ -16,7 +18,8 @@ public class Burst : Stat
 
     private void Start()
     {
-        burstBar.localScale = new Vector3(base.Val * .1f, 1f, 1f);
+        if(burstBar)
+            burstBar.localScale = new Vector3(base.Val * .1f, 1f, 1f);
     }
 
     [SerializeField]

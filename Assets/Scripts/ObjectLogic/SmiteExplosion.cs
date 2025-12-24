@@ -51,7 +51,7 @@ public class SmiteExplosion : MonoBehaviour
         if (other.gameObject.layer != 3) return;
         Rigidbody rb = other.gameObject.GetComponent<Rigidbody>();
         Player player = other.GetComponent<Player>();
-        Health hp = other.GetComponent<Health>();
+        Entity otherEntity = other.GetComponent<Entity>();
         //ADD SPECIFIC METHODS TO KNOCKBACK THINGS THAT HAVE BEHAVIOR COMPONENTS
         Debug.LogFormat("{0} hit!", other.name);
 
@@ -67,9 +67,9 @@ public class SmiteExplosion : MonoBehaviour
             player.Knockback(Charge * RadiusMult * KnockbackMult);
         }
 
-        if (hp && !CompareTag(other.tag))
+        if (otherEntity && !CompareTag(other.tag))
         {
-            hp.Val -= Charge * DamageMult;
+            otherEntity.Health -= Charge * DamageMult;
         }
     }
 

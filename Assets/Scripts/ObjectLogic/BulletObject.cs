@@ -6,7 +6,7 @@ public class BulletObject : MonoBehaviour
 {
     public float Power { get; set; }
     public float baseDmg = 10f;
-    public Health owner;
+    public Entity owner;
 
     private void Start()
     {
@@ -19,11 +19,11 @@ public class BulletObject : MonoBehaviour
         if(other.gameObject.layer == 6) //Enivronment layer
             Destroy(gameObject);
 
-        Health hp = other.gameObject.GetComponent<Health>();
-        if (hp)
+        Entity otherEntity = other.gameObject.GetComponent<Entity>();
+        if (otherEntity)
         {
-            if (hp.tag == gameObject.tag) return;
-            hp.Val -= (Power * (baseDmg + Power));
+            if (otherEntity.tag == gameObject.tag) return;
+            otherEntity.Health -= (Power * (baseDmg + Power));
             Destroy(gameObject);
         }
         

@@ -6,15 +6,15 @@ using UnityEngine;
 public class WaveObject : MonoBehaviour
 {
     public float power { get; set; }
-    public Health owner { get; set; }
+    public Entity owner { get; set; }
 
 
     protected virtual void OnTriggerEnter(Collider other)
     {
-        Health enemyHp = other.gameObject.GetComponent<Health>();
-        if (enemyHp && enemyHp.tag != gameObject.tag)
+        Entity enemyEntity = other.gameObject.GetComponent<Entity>();
+        if (enemyEntity && enemyEntity.tag != gameObject.tag)
         {
-            enemyHp.Val -= power;
+            enemyEntity.Health -= power;
             Debug.LogFormat("Wave Collision with {0} for {1} damage", other.gameObject.name, power);
         }
     }

@@ -6,7 +6,7 @@ public interface IEnemy
 {
     Attack[] Attacks { get; set; }
 
-    Health Health { get; set; }
+    Entity Entity { get; set; }
 
     public void AttackPlayer();
 

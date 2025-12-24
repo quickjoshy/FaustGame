@@ -29,7 +29,6 @@ public class SmiteAbility : Attack
     GameObject ExplosionPrefab;
 
     LayerMask RayMask;
-    Burst PlayerBurst;
 
     //SMITE POSITION NEEDS TO BE .5 * distance
     //SMITE SCALE NEEDS TO BE distance - 1
@@ -44,11 +43,7 @@ public class SmiteAbility : Attack
         base.Start();
         AbilityName = "Damnation";
         RayMask = LayerMask.GetMask("Environment");
-        PlayerBurst = GetComponent<Burst>();
         UpdateUI();
-        UpgradeFunctions.Add(DamageUp);
-        UpgradeFunctions.Add(ForceUp);
-        UpgradeFunctions.Add(CostDown);
     }
 
     // Update is called once per frame
@@ -68,10 +63,13 @@ public class SmiteAbility : Attack
         }
 
         if (Charging) {
-            Charge += Time.deltaTime * Wager * (1 + .03f * Wager);
-            if (PlayerBurst && player.bursting)
-                PlayerBurst.Val -= 30 * Cost * Time.deltaTime;
-            owner.Val -= (Cost * Wager * Time.deltaTime);
+            if (!burst.isBursting)
+                owner.Health -= (Cost * Power * Time.deltaTime);
+            else
+                Power = 6;
+            Charge += Time.deltaTime * Power * (1 + .03f * Power);
+            
+
         }
     }
 
@@ -92,14 +90,10 @@ public class SmiteAbility : Attack
         float distance = Vector3.Distance(CastPoint, EndPoint);
         Vector3 halfway = (EndPoint + CastPoint)/2;
 
-        smite.transform.localScale = new Vector3(distance-2, .3f * Wager, .3f * Wager);
+        smite.transform.localScale = new Vector3(distance-2, .3f * Power, .3f * Power);
         smite.transform.right = cam.transform.forward;
         smite.transform.position = halfway + (smite.transform.right);
         SpawnExplosion(EndPoint);
-        /*
-        Knockback(EndPoint);
-        Damage(EndPoint);
-        */
         Charge = 0f;
     }
 
@@ -110,74 +104,6 @@ public class SmiteAbility : Attack
         SmiteExplosion explosionScript = explosionObject.GetComponent<SmiteExplosion>();
         explosionScript.SetValues(Charge, DamageMult, KnockbackMult);
         
-    }
-
-    /*
-    void Knockback(Vector3 Point) {
-        Collider[] colliders = Physics.OverlapSphere(Point, KnockbackRadius);
-        foreach (Collider c in colliders)
-        {
-            if (c.gameObject.layer != 3) continue;
-            float distance = Vector3.Distance(Point, c.transform.position);
-            Rigidbody rb = c.gameObject.GetComponent<Rigidbody>();
-            Player player = c.GetComponent<Player>();
-            Vector3 force = (c.transform.position - Point) * KnockbackPower;
-            //ADD SPECIFIC METHODS TO KNOCKBACK THINGS THAT HAVE BEHAVIOR COMPONENTS
-
-            if (rb)
-            {
-                rb.AddForce(force, ForceMode.Impulse);
-            }
-
-
-            if (player) {
-                //StartCoroutine(force, 1f);
-                player.Knockback(KnockbackPower * Charge);
-            }
-            
-        }
-    }
-
-    void Damage(Vector3 Point) {
-
-
-        Collider[] colliders = Physics.OverlapSphere(Point, KnockbackRadius);
-        foreach (Collider c in colliders)
-        {
-            if (c.gameObject.layer != 3) continue;
-
-            Health hp = c.GetComponent<Health>();
-            if (hp && !CompareTag(c.tag))
-            {
-                hp.Val -= Charge;
-            }
-        }
-
-    }
-
-    */
-
-    public override void Upgrade()
-    {
-        PrepButtons("Damage", "Knockback", "Cost");
-
-
-        Buttons[0].onClick.AddListener(DamageUp);
-        Buttons[1].onClick.AddListener(ForceUp);
-        Buttons[2].onClick.AddListener(CostDown);
-    }
-
-    void DamageUp() {
-        DamageMult += .3f;
-    }
-
-    void ForceUp() {
-        KnockbackMult++;
-    }
-
-    void CostDown() {
-        DefaultCost *= .6f;
-        Cost = DefaultCost;
     }
 
 }

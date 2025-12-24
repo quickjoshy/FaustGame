@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8175656807216686428}
   - component: {fileID: 5943957998996088480}
   - component: {fileID: 2129652629956575328}
+  - component: {fileID: -1728107416471088656}
   m_Layer: 3
   m_Name: Turret
   m_TagString: Enemy
@@ -61,6 +62,11 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -82,9 +88,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &8175656807216686428
 BoxCollider:
@@ -119,12 +127,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df77899a2fb70544b1f13fdce513275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  val: 200
-  max: 200
-  regen: 1
-  cost: 1
-  recovering: 0
   CastingPoint: {fileID: 45494737631904652}
+  HealthSlider: {fileID: 0}
+  SoulReward: 0
+  _health: 0
+  MaxHealth: 0
 --- !u!114 &2129652629956575328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,10 +144,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10447c3436b858549aef42c9c347bff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DefaultCost: 0
   cost: 0
   owner: {fileID: 0}
   CastingPoint: {fileID: 0}
   AbilityName: 
-  Wager: 0
+  Power: 2
+  BurstPower: 6
   animator: {fileID: 0}
+  cam: {fileID: 0}
+  Buttons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  AttackAction:
+    m_Name: Attack
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: db68c273-4223-479c-9b78-adfc25d18387
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   timerMax: 0
+  BulletForce: 40
+  BulletDamage: 10
+--- !u!114 &-1728107416471088656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4312863133575210979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56434054feedbe7408de77bfcc92b728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Burst
+  val: 0
+  max: 0
+  regen: 0
+  cost: 0
+  recovering: 1
+  burstBar: {fileID: 0}
+  isBursting: 0
+  drain: 0

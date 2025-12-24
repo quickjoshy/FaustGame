@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Unity.VisualScripting;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
-public class Player : MonoBehaviour
+public class Player : Entity
 {
     Transform m_transform;
     CharacterController m_CharacterController;
@@ -28,9 +29,6 @@ public class Player : MonoBehaviour
     int JumpHeight = 1;
 
     [SerializeField]
-    Stat activeStat;
-
-    [SerializeField]
     Attack activeAttack;
 
     public int wager = 1;
@@ -40,14 +38,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     float yVelocity = 0f;
 
-    public bool bursting = false;
-
     LayerMask GroundLayer;
 
-    Speed speed;
+    [SerializeField]
+    float speed;
     Burst burst;
-    PlayerHealth health;
-    Jumps jumps;
+    int jumps;
+
+    [SerializeField]
+    int maxJumps;
 
     public UnityEngine.UI.Image wagerIcon;
 
@@ -86,11 +85,14 @@ public class Player : MonoBehaviour
     InputAction WagerUp;
     InputAction WagerDown;
     InputAction QuitAction;
+    InputAction AttackAction;
     //put player stats as components on player object, can use GetComponents<Stat>() later to find all stats
     //also GetComponent(typeof(activeStat)); I THINK
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+        AttackAction = InputSystem.actions.FindAction("Attack");
         Settings = FindFirstObjectByType<Settings>();
         if (Settings)
             CamSens = Settings.CameraSensitivity * .15f;
@@ -112,10 +114,7 @@ public class Player : MonoBehaviour
         stats = GetComponents<Stat>();
         wagerIcons = Resources.LoadAll<Sprite>("dice");
         m_transform = GetComponent<Transform>();
-        speed = gameObject.GetComponent<Speed>();
         burst = gameObject.GetComponent<Burst>();
-        health = gameObject.GetComponent<PlayerHealth>();
-        jumps = gameObject.GetComponent<Jumps>();
         Rb = gameObject.GetComponent<Rigidbody>();
         m_CharacterController = gameObject.GetComponent<CharacterController>();
         m_Camera = GameObject.Find("PlayerCamera");
@@ -125,6 +124,10 @@ public class Player : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         EnableSpell();
         GameObject.Find("ActiveAbilityText").GetComponent<Text>().text = string.Format("{0}", attacks[0].AbilityName);
+
+        foreach (Attack attack in attacks) {
+            attack.AttackAction = AttackAction;
+        }
     }
 
     // Update is called once per frame
@@ -134,25 +137,23 @@ public class Player : MonoBehaviour
         if (BurstAction.WasPressedThisFrame()) {
             if (burst.Val >= burst.Max)
             {
-                bursting = true;
-                activeAttack.SetBursting(true);
+                burst.isBursting = true;
             }
         }
 
-        if (bursting)
+        if (burst.isBursting)
         {
             burst.Val -= (Time.deltaTime * burst.Drain);
             wagerIcon.sprite = wagerIcons[5];
             if (burst.Val == 0)
             {
-                bursting = false;
                 wagerIcon.sprite = wagerIcons[(int)wager - 1];
-                activeAttack.SetBursting(false);
+                burst.isBursting = false;
             }
         }
 
         if (QuitAction.WasPerformedThisFrame()) {
-            health.Val = 0;
+            //
         }
 
         else
@@ -164,7 +165,7 @@ public class Player : MonoBehaviour
                 wager = Mathf.Clamp(wager, 1, 5);
                 wagerIcon.sprite = wagerIcons[(int)wager - 1];
                 CostDisplay.UpdateCostGraphic(activeAttack, wager);
-                activeAttack.Wager = wager;
+                activeAttack.Power = wager;
             }
             if (WagerDown.WasPressedThisFrame())
             {
@@ -172,7 +173,7 @@ public class Player : MonoBehaviour
                 wager = Mathf.Clamp(wager, 1, 5);
                 wagerIcon.sprite = wagerIcons[(int)wager - 1];
                 CostDisplay.UpdateCostGraphic(activeAttack, wager);
-                activeAttack.Wager = wager;
+                activeAttack.Power = wager;
             }
         }
         
@@ -190,7 +191,7 @@ public class Player : MonoBehaviour
         falling = !Physics.CheckSphere(GroundCheck.position, GroundCheckRadius, GroundLayer);
         Vector3 move = m_transform.forward * (moveY) + m_transform.right * moveX;
 
-        m_CharacterController.Move(Time.deltaTime * (move * speed.Val));
+        m_CharacterController.Move(Time.deltaTime * (move * speed));
 
         m_CharacterController.Move(Time.deltaTime * (-m_Camera.transform.forward * kb));
         
@@ -212,7 +213,7 @@ public class Player : MonoBehaviour
         else
         {
             yVelocity = 0f;
-            jumps.Val = jumps.Max;
+            jumps = maxJumps;
         }
 
 
@@ -221,10 +222,10 @@ public class Player : MonoBehaviour
 
     private void Jump()
     {
-        if (jumps.Val <= 0) return;
+        if (jumps <= 0) return;
         yVelocity = JumpHeight * 5;
-        jumps.Val--;
-        Debug.LogFormat("{0} jumps remaining!", jumps.Val);
+        jumps--;
+        Debug.LogFormat("{0} jumps remaining!", jumps);
     }
 
     void CameraLogic()
@@ -237,10 +238,10 @@ public class Player : MonoBehaviour
         m_transform.Rotate(0f, LookAround.ReadValue<Vector2>().x * CamSens, 0f);
     }
 
-    public void OnEnemyKill(Health enemyHealth) {
+    public void OnEnemyKill(Entity entity) {
         burst.Val += burst.Regen;
-        health.Val += .25f * enemyHealth.Max;
-        Souls += enemyHealth.SoulReward;
+        Health += .25f * entity.MaxHealth;
+        Souls += entity.SoulReward;
         if (WaveManager) {
             WaveManager.OnEnemyKill();
         }
@@ -250,12 +251,6 @@ public class Player : MonoBehaviour
     private void UpdateSoulDisplay()
     {
         SoulDisplay.text = Souls.ToString();
-    }
-
-    public void SetActiveStat(int i) {
-        activeStat.Recovering = true;
-        activeStat = stats[i];
-        activeStat.Recovering = false;
     }
 
     public void ChangeSpell() {
@@ -275,9 +270,8 @@ public class Player : MonoBehaviour
         DisableAllSpells();
         if (!activeAttack) activeAttack = attacks[0];
         activeAttack.enabled = true;
-        activeAttack.Wager = wager;
+        activeAttack.Power = wager;
         Debug.Log(activeAttack.AbilityName + "IS STARTING ACTIVE");
-        if (bursting) activeAttack.SetBursting(true);
         GameObject.Find("ActiveAbilityText").GetComponent<Text>().text = string.Format("{0}", activeAttack.AbilityName);
     }
 
@@ -292,9 +286,8 @@ public class Player : MonoBehaviour
     public void SetActiveSpell(Attack attack) {
         DisableAllSpells();
         activeAttack = attack;
-        activeAttack.Wager = wager;
+        activeAttack.Power = wager;
         attack.enabled = true;
-        if (bursting) activeAttack.SetBursting(true);
         GameObject.Find("ActiveAbilityText").GetComponent<Text>().text = string.Format("{0}", activeAttack.AbilityName);
     }
 
@@ -331,6 +324,16 @@ public class Player : MonoBehaviour
     public void ChangeSouls(int change) {
         Souls += change;
         UpdateSoulDisplay();
+    }
+
+    public void UpdateCostGraphic(Attack activeAttack, float wager)
+    {
+        this.activeAttack = activeAttack;
+    }
+
+    protected override void Kill()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
 }

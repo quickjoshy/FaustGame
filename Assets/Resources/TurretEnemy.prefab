@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 5208905364041581006}
   - component: {fileID: 6561823247354215847}
   - component: {fileID: -8256004030278645726}
+  - component: {fileID: -8060644814339506369}
   m_Layer: 3
   m_Name: TurretEnemy
   m_TagString: Enemy
@@ -320,6 +321,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -341,9 +344,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &804174692268802382
 BoxCollider:
@@ -378,13 +383,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df77899a2fb70544b1f13fdce513275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  val: 100
-  max: 100
-  regen: 1
-  cost: 1
-  recovering: 0
   CastingPoint: {fileID: 8978370366800969528}
-  HealthBar: {fileID: 409781320007037487}
+  HealthSlider: {fileID: 0}
+  HealthImage: {fileID: 7436543537822413681}
+  SoulReward: 25
+  _health: 100
+  MaxHealth: 100
 --- !u!114 &5208905364041581006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,13 +425,23 @@ MonoBehaviour:
   owner: {fileID: 0}
   CastingPoint: {fileID: 0}
   AbilityName: 
-  Wager: 1
+  Power: 2
+  BurstPower: 6
   animator: {fileID: 0}
   cam: {fileID: 0}
   Buttons:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  AttackAction:
+    m_Name: Attack
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: d8eb31b7-988d-47ea-96f4-a2234c215b27
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   timerMax: 0.3
   BulletForce: 60
   BulletDamage: 10
@@ -438,10 +452,10 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7725732162136997990}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -458,3 +472,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &-8060644814339506369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7725732162136997990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56434054feedbe7408de77bfcc92b728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Burst
+  val: 0
+  max: 0
+  regen: 0
+  cost: 0
+  recovering: 1
+  burstBar: {fileID: 0}
+  isBursting: 0
+  drain: 0

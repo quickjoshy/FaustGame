@@ -5,8 +5,8 @@ public class KillPlane : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Health Hp = other.gameObject.GetComponent<Health>();
+        Entity entity = other.gameObject.GetComponent<Entity>();
         Debug.Log("Kill plane!");
-        if (Hp) Hp.Val = 0;
+        if (entity) entity.Health = 0;
     }
 }
