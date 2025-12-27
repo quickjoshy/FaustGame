@@ -793,6 +793,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 19.400024
       objectReference: {fileID: 0}
+    - target: {fileID: 4233960178456820892, guid: 19a626f6edab8624b8acf37442ec6405, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4233960178456820892, guid: 19a626f6edab8624b8acf37442ec6405, type: 3}
+      propertyPath: m_Color.g
+      value: 0.6443302
+      objectReference: {fileID: 0}
+    - target: {fileID: 4233960178456820892, guid: 19a626f6edab8624b8acf37442ec6405, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4297404100806938933, guid: 19a626f6edab8624b8acf37442ec6405, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -840,6 +852,18 @@ PrefabInstance:
     - target: {fileID: 8539176788591825923, guid: 19a626f6edab8624b8acf37442ec6405, type: 3}
       propertyPath: AttackAction.m_Name
       value: Attack
+      objectReference: {fileID: 0}
+    - target: {fileID: 8548587488290251630, guid: 19a626f6edab8624b8acf37442ec6405, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8548587488290251630, guid: 19a626f6edab8624b8acf37442ec6405, type: 3}
+      propertyPath: m_Color.g
+      value: 0.6443302
+      objectReference: {fileID: 0}
+    - target: {fileID: 8548587488290251630, guid: 19a626f6edab8624b8acf37442ec6405, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8973704878395338581, guid: 19a626f6edab8624b8acf37442ec6405, type: 3}
       propertyPath: speed

@@ -68,6 +68,8 @@ public class Player : Entity
 
     Vector3 KnockbackForce;
 
+    [SerializeField] Vector3 Drag;
+
     float kb = 0f;
 
     [SerializeField]
@@ -181,7 +183,6 @@ public class Player : Entity
         MovementLogic();
         CameraLogic();
         ChangeSpell();
-        KnockbackDecay();
     }
 
     void MovementLogic()
@@ -190,11 +191,9 @@ public class Player : Entity
         float moveX = MoveAction.ReadValue<Vector2>().x;
         float moveY = MoveAction.ReadValue<Vector2>().y;
         falling = !Physics.CheckSphere(GroundCheck.position, GroundCheckRadius, GroundLayer);
-        Vector3 move = m_transform.forward * (moveY) + m_transform.right * moveX;
+        Vector3 move = m_transform.forward * (moveY) + m_transform.right * moveX + (KnockbackForce);
 
         m_CharacterController.Move(Time.deltaTime * (move * speed));
-
-        m_CharacterController.Move(Time.deltaTime * (-m_Camera.transform.forward * kb));
         
 
         //falling logic
@@ -210,6 +209,7 @@ public class Player : Entity
             yVelocity -= (9f * Time.deltaTime);
             m_CharacterController.Move(new Vector3(0f, yVelocity, 0f) * Time.deltaTime);
             yVelocity = Mathf.Clamp(yVelocity, -50f, 50f);
+            KnockbackForce = Vector3.zero;
         }
         else
         {
@@ -292,21 +292,9 @@ public class Player : Entity
         GameObject.Find("ActiveAbilityText").GetComponent<Text>().text = string.Format("{0}", activeAttack.AbilityName);
     }
 
-    void KnockbackDecay() {
-        float horizontalDecay = 10f;
-        if (!falling) horizontalDecay = 100f;
-        kb -= horizontalDecay * Time.deltaTime;
-        kb = Math.Clamp(kb, 0, 100);
-        
-    }
-
     public void Knockback(Vector3 force) {
         KnockbackForce = force;
-    }
-
-    public void Knockback(float power) {
-        kb = power;
-        
+        yVelocity = 0;
     }
 
     public Attack GetAttackByName(string attackName) {

@@ -5,7 +5,7 @@ public class SmiteExplosion : MonoBehaviour
 {
 
     float Timer = 0f;
-    readonly float TimerMax = .3f;
+    readonly float TimerMax = .2f;
     float RadiusMult;
     float Charge;
     float DamageMult;
@@ -20,7 +20,7 @@ public class SmiteExplosion : MonoBehaviour
         {
             if (Timer < TimerMax)
             {
-                transform.localScale += Vector3.one * Charge * RadiusMult * Time.deltaTime;
+                transform.localScale += Charge * RadiusMult * Time.deltaTime * Vector3.one;
                 Timer += Time.deltaTime;
                 //Debug.Log(transform.localScale);
             } else
@@ -65,7 +65,9 @@ public class SmiteExplosion : MonoBehaviour
         if (player)
         {
             //StartCoroutine(force, 1f);
-            player.Knockback(Charge * RadiusMult * KnockbackMult);
+            player.Knockback(Charge * KnockbackMult * (player.transform.position - transform.position));
+
+            Debug.Log("PLAYER KNOCKBACK!");
         }
 
         if (otherEntity && !CompareTag(other.tag))
