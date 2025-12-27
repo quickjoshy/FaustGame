@@ -6,7 +6,7 @@ public class SmiteExplosion : MonoBehaviour
 
     float Timer = 0f;
     readonly float TimerMax = .3f;
-    float RadiusMult = 1;
+    float RadiusMult;
     float Charge;
     float DamageMult;
     int KnockbackMult;
@@ -38,10 +38,11 @@ public class SmiteExplosion : MonoBehaviour
 
     }
 
-    public void SetValues(float charge, float damageMult, int knockbackMult) {
+    public void SetValues(float charge, float damageMult, int knockbackMult, float RadiusMult) {
         this.Charge = charge;
         this.DamageMult = damageMult;
         this.KnockbackMult = knockbackMult;
+        this.RadiusMult = RadiusMult;
         Debug.LogFormat("Smite Damage: {0}; DamageMult: {1}", Charge * DamageMult, DamageMult);
     }
 

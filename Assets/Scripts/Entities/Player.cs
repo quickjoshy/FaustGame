@@ -56,6 +56,10 @@ public class Player : Entity
     [SerializeField]
     Sprite[] wagerIcons = new Sprite[6];
 
+    [SerializeField] Image LeftCost;
+
+    [SerializeField] Image RightCost;
+
     [SerializeField]
     Stat[] stats = new Stat[4];
 
@@ -71,8 +75,6 @@ public class Player : Entity
 
     [SerializeField]
     Settings Settings;
-
-    CostDisplay CostDisplay;
 
     InputAction JumpAction;
     InputAction MoveAction;
@@ -99,7 +101,6 @@ public class Player : Entity
         else
             CamSens = .15f;
 
-        CostDisplay = GetComponentInChildren<CostDisplay>();
         JumpAction = InputSystem.actions.FindAction("Jump");
         MoveAction = InputSystem.actions.FindAction("Move");
         LookAround = InputSystem.actions.FindAction("Look");
@@ -164,7 +165,7 @@ public class Player : Entity
                 wager++;
                 wager = Mathf.Clamp(wager, 1, 5);
                 wagerIcon.sprite = wagerIcons[(int)wager - 1];
-                CostDisplay.UpdateCostGraphic(activeAttack, wager);
+                UpdateCostGraphic(activeAttack, wager);
                 activeAttack.Power = wager;
             }
             if (WagerDown.WasPressedThisFrame())
@@ -172,7 +173,7 @@ public class Player : Entity
                 wager--;
                 wager = Mathf.Clamp(wager, 1, 5);
                 wagerIcon.sprite = wagerIcons[(int)wager - 1];
-                CostDisplay.UpdateCostGraphic(activeAttack, wager);
+                UpdateCostGraphic(activeAttack, wager);
                 activeAttack.Power = wager;
             }
         }
@@ -261,7 +262,7 @@ public class Player : Entity
         if(Attack1.WasPressedThisFrame() || Attack2.WasPressedThisFrame() || Attack3.WasPressedThisFrame() || Attack4.WasPressedThisFrame())
         {
             EnableSpell();
-            CostDisplay.UpdateCostGraphic(activeAttack, wager);
+            UpdateCostGraphic(activeAttack, wager);
         }
     }
 
@@ -328,12 +329,36 @@ public class Player : Entity
 
     public void UpdateCostGraphic(Attack activeAttack, float wager)
     {
+        Debug.Log("Updating cost graphic");
         this.activeAttack = activeAttack;
+        float costWidth = wager * activeAttack.Cost;
+        LeftCost.rectTransform.sizeDelta = new Vector2(costWidth, 15);
+        RightCost.rectTransform.sizeDelta = new Vector2(costWidth, 15);
+
+
+        float halfHealthWidth = HealthImage.rectTransform.rect.width / 2;
+        float halfCostWidth = LeftCost.rectTransform.rect.width / 2;
+        
+
+        LeftCost.rectTransform.anchoredPosition = new Vector2(HealthImage.rectTransform.anchoredPosition.x - (halfHealthWidth) + halfCostWidth, 10.5f);
+        RightCost.rectTransform.anchoredPosition = new Vector2(HealthImage.rectTransform.anchoredPosition.x + (halfHealthWidth) - halfCostWidth, 10.5f);
     }
 
     protected override void Kill()
     {
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public override float Health
+    {
+        get {
+            return base.Health;
+        }
+
+        set {
+            base.Health = value;
+            UpdateCostGraphic(activeAttack, wager);
+        }
     }
 
 }

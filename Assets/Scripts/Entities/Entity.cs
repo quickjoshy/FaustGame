@@ -8,20 +8,25 @@ public class Entity : MonoBehaviour
     public Transform CastingPoint;
 
     [SerializeField]
-    Slider HealthSlider;
+    protected Image HealthImage;
 
-    [SerializeField]
-    Image HealthImage;
+    protected float healthImageWidth;
+    protected float healthImageHeight;
+
     public int SoulReward = 0;
+
     protected virtual void Start()
     {
         if (CastingPoint == null) CastingPoint = transform;
         _health = MaxHealth;
+        if (!HealthImage) return;
+        healthImageWidth = HealthImage.rectTransform.rect.width;
+        healthImageHeight = HealthImage.rectTransform.rect.height;
     }
 
     [SerializeField]
     private float _health;
-    public float Health {
+    public virtual float Health {
         get {
             if (_health <= 0) {
                 Kill();
@@ -33,15 +38,17 @@ public class Entity : MonoBehaviour
             _health = value;
             if (value > MaxHealth)
                 _health = MaxHealth;
-            if (HealthSlider)
-                HealthSlider.value = _health;
-            else if (HealthImage)
-                HealthImage.rectTransform.localScale = new Vector3(Health/MaxHealth, 1, 1);
+
+            if(HealthImage)
+            HealthImage.rectTransform.sizeDelta = new Vector2(GetPercentHp() * healthImageWidth, healthImageHeight);
         }
     }
     public float MaxHealth;
 
-    
+
+    public float GetPercentHp() {
+        return Health / MaxHealth;
+    }
 
 
     protected virtual void Kill() {

@@ -18,6 +18,9 @@ public class SmiteAbility : Attack
     float DamageMult;
 
     [SerializeField]
+    float RadiusMult;
+
+    [SerializeField]
     int Range = 60;
 
     float Charge = 0;
@@ -102,7 +105,7 @@ public class SmiteAbility : Attack
         GameObject explosionObject = Instantiate(ExplosionPrefab, Point, Quaternion.identity);
         explosionObject.tag = tag;
         SmiteExplosion explosionScript = explosionObject.GetComponent<SmiteExplosion>();
-        explosionScript.SetValues(Charge, DamageMult, KnockbackMult);
+        explosionScript.SetValues(Charge, DamageMult, KnockbackMult, RadiusMult);
         
     }
 
