@@ -65,7 +65,7 @@ public class SmiteExplosion : MonoBehaviour
         if (player)
         {
             //StartCoroutine(force, 1f);
-            player.Knockback(Charge * KnockbackMult * (player.transform.position - transform.position));
+            player.Knockback((player.transform.position - transform.position), Charge * KnockbackMult);
 
             Debug.Log("PLAYER KNOCKBACK!");
         }

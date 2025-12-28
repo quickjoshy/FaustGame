@@ -66,11 +66,8 @@ public class Player : Entity
     public Attack[] attacks = new Attack[4];
     private bool falling = true;
 
-    Vector3 KnockbackForce;
-
-    [SerializeField] Vector3 Drag;
-
-    float kb = 0f;
+    [SerializeField] Vector3 KnockbackVector;
+    [SerializeField] float DragMult;
 
     [SerializeField]
     float CamSens = 1;
@@ -191,9 +188,11 @@ public class Player : Entity
         float moveX = MoveAction.ReadValue<Vector2>().x;
         float moveY = MoveAction.ReadValue<Vector2>().y;
         falling = !Physics.CheckSphere(GroundCheck.position, GroundCheckRadius, GroundLayer);
-        Vector3 move = m_transform.forward * (moveY) + m_transform.right * moveX + (KnockbackForce);
+        Vector3 move = m_transform.forward * (moveY) + m_transform.right * moveX + (KnockbackVector);
 
         m_CharacterController.Move(Time.deltaTime * (move * speed));
+
+        KnockbackVector = Vector3.Lerp(KnockbackVector, Vector3.zero, DragMult * Time.deltaTime);
         
 
         //falling logic
@@ -209,7 +208,6 @@ public class Player : Entity
             yVelocity -= (9f * Time.deltaTime);
             m_CharacterController.Move(new Vector3(0f, yVelocity, 0f) * Time.deltaTime);
             yVelocity = Mathf.Clamp(yVelocity, -50f, 50f);
-            KnockbackForce = Vector3.zero;
         }
         else
         {
@@ -292,8 +290,8 @@ public class Player : Entity
         GameObject.Find("ActiveAbilityText").GetComponent<Text>().text = string.Format("{0}", activeAttack.AbilityName);
     }
 
-    public void Knockback(Vector3 force) {
-        KnockbackForce = force;
+    public void Knockback(Vector3 direction, float force) {
+        KnockbackVector = direction * force;
         yVelocity = 0;
     }
 
