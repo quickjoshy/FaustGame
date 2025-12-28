@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.98944926, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.6443302, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -846,7 +846,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.98944926, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.6443302, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1249,6 +1249,8 @@ MonoBehaviour:
   - {fileID: 8539176788591825923}
   - {fileID: 5053548087745047668}
   - {fileID: 7316713676230818620}
+  KnockbackVector: {x: 0, y: 0, z: 0}
+  DragMult: 1
   CamSens: 0.15
   Settings: {fileID: 0}
 --- !u!114 &46958556871432292
@@ -1389,7 +1391,7 @@ MonoBehaviour:
   CastingPoint: {fileID: 0}
   AbilityName: Communion
   Power: 0
-  BurstPower: 0
+  BurstPower: 6
   animator: {fileID: 0}
   cam: {fileID: 6178662756915484346}
   Buttons:
@@ -1397,7 +1399,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   AttackAction:
-    m_Name: 
+    m_Name: Attack
     m_Type: 0
     m_ExpectedControlType: 
     m_Id: 80fa2e2c-a2b2-4ee4-8cca-8a49eedc3307
@@ -1471,7 +1473,7 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
-  KnockbackMult: 10
+  KnockbackMult: 1
   DamageMult: 15
   RadiusMult: 2
   Range: 60

@@ -47,14 +47,14 @@ public class SummonAbility : Attack
         }
     }
 
-    public void alt() {
+    public void Alt() {
         RaycastHit hit;
         if (Physics.Raycast(CastingPoint.position, CastingPoint.forward, out hit))
         {
             DirectTurrets(hit.collider.transform.position);
         }
     }
-
+    
     private void DirectTurrets(Vector3 point)
     {
         foreach (Transform t in turrets)

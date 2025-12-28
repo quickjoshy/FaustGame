@@ -77,11 +77,12 @@ public class BulletAbility : Attack
     public void CreateBullet()
     {
         GameObject newBullet = Instantiate(bullet);
-        BulletObject bulletObj = newBullet.AddComponent<BulletObject>();
+        BulletObject bulletObj = newBullet.GetComponent<BulletObject>();
         
         bulletObj.owner = owner;
         bulletObj.baseDmg = BulletDamage;
         newBullet.transform.position = CastingPoint.position + CastingPoint.forward;
+        newBullet.transform.forward = CastingPoint.forward;
 
         newBullet.GetComponent<Rigidbody>().AddForce(CastingPoint.forward * BulletForce, ForceMode.Impulse);
         if (!burst.isBursting)
